@@ -1,0 +1,13 @@
+/dts-v1/;
+/ {
+    fragment@0 {
+        target-path = "/soc/i2c@7e804000"; // Target the I2C bus of i2c1
+        __overlay__ {
+            ina226@44 {
+                compatible = "ti,ina226";
+                reg = <0x44>; // I2C address of the INA226 from i2cdetect
+                shunt-resistor = <100000>; // Shunt resistor value in micro-ohms (0.1 ohm)
+            };
+        };
+    };
+};
