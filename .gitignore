@@ -1,1 +1,6 @@
+debian-*-arm64.tar.xz
+disk.raw
+.bookworm_apt_cache/
+.bullseye_apt_cache/
 ina2xx/*.dtbo
+pixelpilot/PixelPilot_rk/

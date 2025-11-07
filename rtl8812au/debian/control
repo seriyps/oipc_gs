@@ -1,0 +1,22 @@
+Source: rtl8812au
+Section: misc
+Priority: optional
+Maintainer: Sergey Prokhorov <seriy.pr@gmail.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-dkms,
+ dh-exec,
+ bc
+Standards-Version: 4.7.2
+Homepage: https://github.com/svpcom/rtl8812au
+#Vcs-Browser: https://salsa.debian.org/debian/rtl8812au
+#Vcs-Git: https://salsa.debian.org/debian/rtl8812au.git
+
+Package: rtl8812au-dkms
+Architecture: any
+Depends:
+ ${misc:Depends},
+Description: Realtek RTL8812AU DKMS driver with WFB patches
+ Realtek RTL8812AU driver patched to suport Wifibroadcast
+ packet injection.

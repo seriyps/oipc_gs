@@ -1,0 +1,15 @@
+#!/usr/bin/dh-exec
+
+88XXau_wfb* usr/src/rtl8812au-${DEB_VERSION}/
+Kconfig usr/src/rtl8812au-${DEB_VERSION}/
+LICENSE usr/src/rtl8812au-${DEB_VERSION}/
+Makefile usr/src/rtl8812au-${DEB_VERSION}/
+core usr/src/rtl8812au-${DEB_VERSION}/
+dkms.conf usr/src/rtl8812au-${DEB_VERSION}/
+# documents usr/src/rtl8812au-${DEB_VERSION}/
+hal usr/src/rtl8812au-${DEB_VERSION}/
+include usr/src/rtl8812au-${DEB_VERSION}/
+os_dep usr/src/rtl8812au-${DEB_VERSION}/
+platform usr/src/rtl8812au-${DEB_VERSION}/
+realtek_88XXau.conf usr/src/rtl8812au-${DEB_VERSION}/
+# tools usr/src/rtl8812au-${DEB_VERSION}/

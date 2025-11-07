@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+# See debhelper(7) (uncomment to enable).
+# Output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+
+# See FEATURE AREAS in dpkg-buildflags(1).
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# See ENVIRONMENT in dpkg-buildflags(1).
+# Package maintainers to append CFLAGS.
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# Package maintainers to append LDFLAGS.
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+include /usr/share/dpkg/pkg-info.mk
+#include /usr/share/dpkg/architecture.mk
+
+KVER := $(shell ls /lib/modules | tail -n 1)
+
+%:
+	dh $@ --with dkms
+
+override_dh_install:
+	DEB_VERSION=$(DEB_VERSION) dh_install
+
+override_dh_builddeb:
+	dh_builddeb -- -Zxz
+
+override_dh_auto_build:
+	dh_auto_build -- KVER=$(KVER)
+
+override_dh_auto_install:
+	dh_auto_install -- KVER=$(KVER)
