@@ -1,0 +1,10 @@
+# Example file for upstream/metadata.
+# See https://wiki.debian.org/UpstreamMetadata for more info/fields.
+# Below an example based on a github project.
+
+Bug-Database: https://github.com/libc0607/rtl8733bu-20240806/issues
+# Bug-Submit: https://github.com/<user>/rtl8733bu/issues/new
+# Changelog: https://github.com/<user>/rtl8733bu/blob/master/CHANGES
+# Documentation: https://github.com/<user>/rtl8733bu/wiki
+Repository-Browse: https://github.com/libc0607/rtl8733bu-20240806
+Repository: https://github.com/libc0607/rtl8733bu-20240806.git

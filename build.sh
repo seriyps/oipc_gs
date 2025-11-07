@@ -9,6 +9,8 @@ RTL8812AU_DEB_VER="5.2.20"
 RTL8812EU_GIT_VER="eeeb886319c0284d70074b9c779868b49bda7b35"
 RTL8812EU_DEB_VER="5.15.0"
 
+RTL8733BU_GIT_VER="2ec19e154cffbc2abd98d43d59278dffa6e50d49"
+RTL8733BU_DEB_VER="5.15.12"
 
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
@@ -27,6 +29,10 @@ APT_CACHE=$ROOT/.${DEBIAN_CODENAME}_apt_cache/
 #
 # Common
 #
+
+mk_git_deb_version() {
+    echo `git log --date=format:%Y%m%d --pretty=$1~git%cd.%h | head -n 1`
+}
 
 # Ensure required dependencies are installed
 do_install_dependencies() {
@@ -163,10 +169,45 @@ build_rtl8812eu_deb() {
     sudo umount $MOUNT/usr/src/rtl8812eu
 }
 
-# Build RTL8812AU package
+# Build RTL8812EU package
 do_rtl8812eu() {
     mount_raw_disk
     build_rtl8812eu_deb
+    umount_raw_disk
+}
+
+#
+# RTL8733BU DKMS Driver
+#
+
+build_rtl8733bu_deb() {
+    cd rtl8733bu/
+    if [ ! -d "rtl8733bu-20240806" ]; then
+        git clone https://github.com/libc0607/rtl8733bu-20240806.git
+    fi
+    cd rtl8733bu-20240806/
+    git checkout $RTL8733BU_GIT_VER
+    git archive $RTL8733BU_GIT_VER | xz > ../rtl8733bu_${RTL8733BU_DEB_VER}.orig.tar.xz
+    cd ..
+    SRCDIR=rtl8733bu_${RTL8733BU_DEB_VER}
+    rm -rf $SRCDIR
+    mkdir $SRCDIR
+    tar -axf rtl8733bu_${RTL8733BU_DEB_VER}.orig.tar.xz -C $SRCDIR
+    cp -r debian/ $SRCDIR/debian
+
+    sudo mkdir -p $MOUNT/usr/src/rtl8733bu
+    sudo mount --bind $(pwd) $MOUNT/usr/src/rtl8733bu
+
+    sudo chroot $MOUNT /usr/src/rtl8733bu/build_deb.sh \
+         --pkg-version $RTL8733BU_DEB_VER --debian-codename $DEBIAN_CODENAME
+
+    sudo umount $MOUNT/usr/src/rtl8733bu
+}
+
+# Build RTL8733BU package
+do_rtl8733bu() {
+    mount_raw_disk
+    build_rtl8733bu_deb
     umount_raw_disk
 }
 

@@ -59,10 +59,10 @@ Are we there yet?
 
 * [x] wfb-ng deb package
 * [x] pixelpilot deb package
-* [ ] wifi-drivers deb package
+* [x] wifi-drivers deb package
   * [x] RTL8812AU
   * [x] RTL8812EU
-  * [ ] RTL8733BU
+  * [x] RTL8733BU
 * [ ] msposd deb package
 * [ ] adaptive-link deb package
 * [ ] extras
