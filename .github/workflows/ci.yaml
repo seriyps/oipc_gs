@@ -1,0 +1,51 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.debian_codename }}
+    strategy:
+      matrix:
+        debian_codename:
+          - bullseye
+          - bookworm
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Cache debian
+        id: cache-debian
+        uses: actions/cache@v4
+        with:
+          path: |
+            .${{ matrix.debian_codename }}_apt_cache
+            debian-*-generic-arm64.tar
+          key: ${{ matrix.debian_codename }}-build-files
+
+      - name: Install deps
+        run: |
+          ./build.sh install_dependencies
+
+      - name: Build
+        run: |
+          ./build.sh --debian-codename ${{ matrix.debian_codename }} pixelpilot rtl8812au rtl8812eu rtl8733bu
+          sudo rm -r .${{ matrix.debian_codename }}_apt_cache/archives/{lock,partial}
+
+      # - name: Upload binary
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ matrix.debian_codename }}-bin
+      #     path: |
+      #       ${{ matrix.debian_codename }}_pixelpilot

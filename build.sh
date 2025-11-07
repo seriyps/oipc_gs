@@ -15,6 +15,21 @@ RTL8733BU_DEB_VER="5.15.12"
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
 
+
+POS_ARGS=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --debian-codename)
+            DEBIAN_CODENAME=$2
+            shift 2
+            ;;
+        *)
+            POS_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
 if [ "$DEBIAN_CODENAME" == "bookworm" ]; then
     DEBIAN_SYSTEM="debian-12-generic-arm64.tar"
 elif [ "$DEBIAN_CODENAME" == "bullseye" ]; then
@@ -37,7 +52,7 @@ mk_git_deb_version() {
 # Ensure required dependencies are installed
 do_install_dependencies() {
     sudo apt-get update
-    sudo apt-get install -y wget tar git qemu-user-static
+    sudo apt-get install -y tar git qemu-user-static
 }
 
 get_debian_image() {
@@ -59,12 +74,17 @@ mount_raw_disk() {
     sudo mount `sudo losetup -P --show -f disk.raw`p1 $MOUNT
 	mkdir $APT_CACHE || true
 	sudo mount -o bind $APT_CACHE $MOUNT/var/cache/apt
+    sudo mkdir -p $MOUNT/dev
+    sudo touch $MOUNT/dev/null
+    sudo mount -o bind /dev/null $MOUNT/dev/null
     sudo rm $MOUNT/etc/resolv.conf
     echo nameserver 1.1.1.1 | sudo tee -a $MOUNT/etc/resolv.conf
+    sudo chroot $MOUNT /usr/bin/sh -c "[ -f /usr/bin/make ] || (apt update ; apt install make)"
 }
 
 umount_raw_disk() {
     sudo umount $MOUNT/var/cache/apt
+    sudo umount $MOUNT/dev/null
     sudo umount $MOUNT
     sudo losetup --detach `losetup | grep disk.raw | cut -f 1 -d " "`
 }
@@ -105,7 +125,7 @@ build_pixelpilot_deb() {
     sudo chroot $MOUNT /usr/bin/make -C /usr/src/pixelpilot -f /usr/src/pixelpilot/Makefile \
          DEB_VER=$PIXELPILOT_DEB_VER DEBIAN_CODENAME=$DEBIAN_CODENAME
 
-    sudo umount $MOUNT/usr/src/PixelPilot_rk
+    sudo umount $MOUNT/usr/src/pixelpilot
 }
 
 # Build PixelPilot package
@@ -174,6 +194,8 @@ do_rtl8733bu() {
 }
 
 set -x
-for arg in "$@"; do
+
+for arg in ${POS_ARGS[@]}; do
     do_$arg
+    cd $ROOT
 done
