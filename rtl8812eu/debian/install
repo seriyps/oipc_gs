@@ -1,0 +1,14 @@
+#!/usr/bin/dh-exec
+
+8812eu.* usr/src/rtl8812eu-${DEB_VERSION}/
+Kconfig usr/src/rtl8812eu-${DEB_VERSION}/
+Makefile usr/src/rtl8812eu-${DEB_VERSION}/
+core usr/src/rtl8812eu-${DEB_VERSION}/
+dkms.conf usr/src/rtl8812eu-${DEB_VERSION}/
+hal usr/src/rtl8812eu-${DEB_VERSION}/
+halmac.mk usr/src/rtl8812eu-${DEB_VERSION}/
+include usr/src/rtl8812eu-${DEB_VERSION}/
+os_dep usr/src/rtl8812eu-${DEB_VERSION}/
+platform usr/src/rtl8812eu-${DEB_VERSION}/
+realtek_88x2eu.conf usr/src/rtl8812eu-${DEB_VERSION}/
+rtl8822e.mk usr/src/rtl8812eu-${DEB_VERSION}/

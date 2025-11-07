@@ -61,7 +61,7 @@ Are we there yet?
 * [x] pixelpilot deb package
 * [ ] wifi-drivers deb package
   * [x] RTL8812AU
-  * [ ] RTL8812EU
+  * [x] RTL8812EU
   * [ ] RTL8733BU
 * [ ] msposd deb package
 * [ ] adaptive-link deb package

@@ -6,6 +6,9 @@ PIXELPILOT_DEB_VER=$PIXELPILOT_GIT_VER
 RTL8812AU_GIT_VER="7bccd51541dd505270d322a7da3b9feccc910393"
 RTL8812AU_DEB_VER="5.2.20"
 
+RTL8812EU_GIT_VER="eeeb886319c0284d70074b9c779868b49bda7b35"
+RTL8812EU_DEB_VER="5.15.0"
+
 
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
@@ -129,6 +132,41 @@ build_rtl8812au_deb() {
 do_rtl8812au() {
     mount_raw_disk
     build_rtl8812au_deb
+    umount_raw_disk
+}
+
+#
+# RTL8812AU DKMS Driver
+#
+
+build_rtl8812eu_deb() {
+    cd rtl8812eu/
+    if [ ! -d "rtl8812eu" ]; then
+        git clone https://github.com/svpcom/rtl8812eu.git
+    fi
+    cd rtl8812eu/
+    git checkout $RTL8812EU_GIT_VER
+    git archive $RTL8812EU_GIT_VER | xz > ../rtl8812eu_${RTL8812EU_DEB_VER}.orig.tar.xz
+    cd ..
+    SRCDIR=rtl8812eu_${RTL8812EU_DEB_VER}
+    rm -rf $SRCDIR
+    mkdir $SRCDIR
+    tar -axf rtl8812eu_${RTL8812EU_DEB_VER}.orig.tar.xz -C $SRCDIR
+    cp -r debian/ $SRCDIR/debian
+
+    sudo mkdir -p $MOUNT/usr/src/rtl8812eu
+    sudo mount --bind $(pwd) $MOUNT/usr/src/rtl8812eu
+
+    sudo chroot $MOUNT /usr/src/rtl8812eu/build_deb.sh \
+         --pkg-version $RTL8812EU_DEB_VER --debian-codename $DEBIAN_CODENAME
+
+    sudo umount $MOUNT/usr/src/rtl8812eu
+}
+
+# Build RTL8812AU package
+do_rtl8812eu() {
+    mount_raw_disk
+    build_rtl8812eu_deb
     umount_raw_disk
 }
 
