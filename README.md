@@ -94,6 +94,10 @@ via DKMS
 * RTL8812eu https://github.com/svpcom/rtl8812eu
 * RTL8733BU https://github.com/libc0607/rtl8733bu-20240806
 
+### mposd
+
+https://github.com/OpenIPC/msposd
+
 ### Adaptive link
 
 https://github.com/OpenIPC/adaptive-link
@@ -186,7 +190,11 @@ at `https://github.com/my-user/my-app`.
    It can be created by `dh_make --createorig`, but then the .orig would include `.git` directory,
    so we use `git archive` instead.
 3. Initialize the `debian/` folder `cd my-app/; dh_make --packagename my-app_1.2.3 --single -f my-app_1.2.3.orig.tar.xz`
-4. Edit the contents of this `debian/` folder
-5. Create the `my-app/build_deb.sh` - script that will be executed inside a container.
+4. Edit the contents of this `debian/` folder; make sure changelog contains the right version, eg
+   `git log --date=format:%Y%m%d --pretty=${MY_APP_DEB_VSN}~git%cd.%h | head -n 1`.
+   Use `dch -v $VSN` if needed.
+5. Create the `my-app/Makefile` - makefile that should have `deb` and `clean` targets. `deb` will
+   be executed from within the Makefile's directory inside a container and should actually build
+   the DEB package.
 5. Add `do_my-app` function to `build.sh` that will clone the code, copy the `debian` dir into it
-   and call `build_deb` from inside the container. Add `MY_APP_GIT_VSN` and `MY_APP_DEB_VSN` variables.
+   and call `make deb` from inside the container. Add `MY_APP_GIT_VSN` and `MY_APP_DEB_VSN` variables.

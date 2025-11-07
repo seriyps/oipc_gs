@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOTDIR=/usr/src/rtl8812au
+ROOTDIR=$(pwd)
 DEBIAN_CODENAME=bookworm
 PKG_VERSION=5.2.20
 SKIP_SETUP=0

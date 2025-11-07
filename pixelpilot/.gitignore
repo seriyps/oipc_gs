@@ -1,1 +1,6 @@
 PixePilot_rk
+pixelpilot-rk-dbgsym_*.deb
+pixelpilot-rk_*.deb
+pixelpilot-rk_*.buildinfo
+pixelpilot-rk_*.changes
+pixelpilot-rk_*.orig.tar.*

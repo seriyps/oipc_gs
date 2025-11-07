@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOTDIR=/usr/src/rtl8733bu
+ROOTDIR=$(pwd)
 DEBIAN_CODENAME=bookworm
 PKG_VERSION=5.15.12
 SKIP_SETUP=0

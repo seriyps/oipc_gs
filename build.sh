@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PIXELPILOT_GIT_VER="1.3.0"
-PIXELPILOT_DEB_VER=$PIXELPILOT_GIT_VER
+PIXELPILOT_GIT_VER="406a5b5f13dd2baa710d6ec8bf011f0cbe236932"
+PIXELPILOT_DEB_VER="1.3.0"
 
 RTL8812AU_GIT_VER="7bccd51541dd505270d322a7da3b9feccc910393"
 RTL8812AU_DEB_VER="5.2.20"
@@ -77,6 +77,14 @@ do_umount() {
     umount_raw_disk
 }
 
+do_clean() {
+    for app in pixelpilot rtl8812au rtl8812eu rtl8733bu; do
+        cd $app/
+        make clean
+        cd ..
+    done
+}
+
 #
 # PixelPilot
 #
@@ -89,12 +97,13 @@ build_pixelpilot_deb() {
     cd PixelPilot_rk/
     git checkout $PIXELPILOT_GIT_VER
     git submodule update --init
+    cd ..
 
-    sudo mkdir -p $MOUNT/usr/src/PixelPilot_rk
-    sudo mount --bind $(pwd) $MOUNT/usr/src/PixelPilot_rk
+    sudo mkdir -p $MOUNT/usr/src/pixelpilot
+    sudo mount --bind $(pwd) $MOUNT/usr/src/pixelpilot
 
-	sudo chroot $MOUNT /usr/src/PixelPilot_rk/tools/container_build.sh \
-         --pkg-version $PIXELPILOT_DEB_VER --debian-codename $DEBIAN_CODENAME --build-type deb
+    sudo chroot $MOUNT /usr/bin/make -C /usr/src/pixelpilot -f /usr/src/pixelpilot/Makefile \
+         DEB_VER=$PIXELPILOT_DEB_VER DEBIAN_CODENAME=$DEBIAN_CODENAME
 
     sudo umount $MOUNT/usr/src/PixelPilot_rk
 }
@@ -107,107 +116,60 @@ do_pixelpilot() {
 }
 
 #
-# RTL8812AU DKMS Driver
+# DKMS WiFi Drivers
 #
 
-build_rtl8812au_deb() {
-    cd rtl8812au/
-    if [ ! -d "rtl8812au" ]; then
-        git clone https://github.com/svpcom/rtl8812au.git
+build_rtl_dkms_deb() {
+    NAME=$1
+    GIT_REPOSITORY=$2
+    GIT_VER=$3
+    DEB_VER_BASE=$4
+    cd $NAME/
+    if [ ! -d "$NAME" ]; then
+        git clone $GIT_REPOSITORY $NAME
     fi
-    cd rtl8812au/
-    git checkout $RTL8812AU_GIT_VER
-    git archive $RTL8812AU_GIT_VER | xz > ../rtl8812au_${RTL8812AU_DEB_VER}.orig.tar.xz
+    cd $NAME/
+    git checkout $GIT_VER
+    DEB_VER=$(mk_git_deb_version $DEB_VER_BASE)
+    git archive $GIT_VER | xz > ../${NAME}_${DEB_VER}.orig.tar.xz
     cd ..
-    SRCDIR=rtl8812au_${RTL8812AU_DEB_VER}
+    SRCDIR=${NAME}_${DEB_VER}
     rm -rf $SRCDIR
     mkdir $SRCDIR
-    tar -axf rtl8812au_${RTL8812AU_DEB_VER}.orig.tar.xz -C $SRCDIR
+    tar -axf ${NAME}_${DEB_VER}.orig.tar.xz -C $SRCDIR
     cp -r debian/ $SRCDIR/debian
 
-    sudo mkdir -p $MOUNT/usr/src/rtl8812au
-    sudo mount --bind $(pwd) $MOUNT/usr/src/rtl8812au
+    sudo mkdir -p $MOUNT/usr/src/${NAME}
+    sudo mount --bind $(pwd) $MOUNT/usr/src/${NAME}
 
-    sudo chroot $MOUNT /usr/src/rtl8812au/build_deb.sh \
-         --pkg-version $RTL8812AU_DEB_VER --debian-codename $DEBIAN_CODENAME
+    sudo chroot $MOUNT /usr/bin/make -C /usr/src/${NAME} -f /usr/src/${NAME}/Makefile \
+         DEB_VER=$DEB_VER DEBIAN_CODENAME=$DEBIAN_CODENAME
 
-    sudo umount $MOUNT/usr/src/rtl8812au
+    sudo umount $MOUNT/usr/src/${NAME}
 }
 
 # Build RTL8812AU package
 do_rtl8812au() {
     mount_raw_disk
-    build_rtl8812au_deb
+    build_rtl_dkms_deb rtl8812au https://github.com/svpcom/rtl8812au.git \
+        $RTL8812AU_GIT_VER $RTL8812AU_DEB_VER
     umount_raw_disk
-}
-
-#
-# RTL8812AU DKMS Driver
-#
-
-build_rtl8812eu_deb() {
-    cd rtl8812eu/
-    if [ ! -d "rtl8812eu" ]; then
-        git clone https://github.com/svpcom/rtl8812eu.git
-    fi
-    cd rtl8812eu/
-    git checkout $RTL8812EU_GIT_VER
-    git archive $RTL8812EU_GIT_VER | xz > ../rtl8812eu_${RTL8812EU_DEB_VER}.orig.tar.xz
-    cd ..
-    SRCDIR=rtl8812eu_${RTL8812EU_DEB_VER}
-    rm -rf $SRCDIR
-    mkdir $SRCDIR
-    tar -axf rtl8812eu_${RTL8812EU_DEB_VER}.orig.tar.xz -C $SRCDIR
-    cp -r debian/ $SRCDIR/debian
-
-    sudo mkdir -p $MOUNT/usr/src/rtl8812eu
-    sudo mount --bind $(pwd) $MOUNT/usr/src/rtl8812eu
-
-    sudo chroot $MOUNT /usr/src/rtl8812eu/build_deb.sh \
-         --pkg-version $RTL8812EU_DEB_VER --debian-codename $DEBIAN_CODENAME
-
-    sudo umount $MOUNT/usr/src/rtl8812eu
 }
 
 # Build RTL8812EU package
 do_rtl8812eu() {
     mount_raw_disk
-    build_rtl8812eu_deb
+    build_rtl_dkms_deb rtl8812eu https://github.com/svpcom/rtl8812eu.git \
+        $RTL8812EU_GIT_VER $RTL8812EU_DEB_VER
     umount_raw_disk
-}
-
-#
-# RTL8733BU DKMS Driver
-#
-
-build_rtl8733bu_deb() {
-    cd rtl8733bu/
-    if [ ! -d "rtl8733bu-20240806" ]; then
-        git clone https://github.com/libc0607/rtl8733bu-20240806.git
-    fi
-    cd rtl8733bu-20240806/
-    git checkout $RTL8733BU_GIT_VER
-    git archive $RTL8733BU_GIT_VER | xz > ../rtl8733bu_${RTL8733BU_DEB_VER}.orig.tar.xz
-    cd ..
-    SRCDIR=rtl8733bu_${RTL8733BU_DEB_VER}
-    rm -rf $SRCDIR
-    mkdir $SRCDIR
-    tar -axf rtl8733bu_${RTL8733BU_DEB_VER}.orig.tar.xz -C $SRCDIR
-    cp -r debian/ $SRCDIR/debian
-
-    sudo mkdir -p $MOUNT/usr/src/rtl8733bu
-    sudo mount --bind $(pwd) $MOUNT/usr/src/rtl8733bu
-
-    sudo chroot $MOUNT /usr/src/rtl8733bu/build_deb.sh \
-         --pkg-version $RTL8733BU_DEB_VER --debian-codename $DEBIAN_CODENAME
-
-    sudo umount $MOUNT/usr/src/rtl8733bu
 }
 
 # Build RTL8733BU package
 do_rtl8733bu() {
     mount_raw_disk
-    build_rtl8733bu_deb
+    #build_rtl8733bu_deb
+    build_rtl_dkms_deb rtl8733bu https://github.com/libc0607/rtl8733bu-20240806.git \
+        $RTL8733BU_GIT_VER $RTL8733BU_DEB_VER
     umount_raw_disk
 }
 

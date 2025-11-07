@@ -4,3 +4,4 @@ disk.raw
 .bullseye_apt_cache/
 ina2xx/*.dtbo
 pixelpilot/PixelPilot_rk/
+mountpoint/
