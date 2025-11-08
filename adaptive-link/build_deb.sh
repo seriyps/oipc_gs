@@ -2,7 +2,7 @@
 
 ROOTDIR=$(pwd)
 DEBIAN_CODENAME=bookworm
-PKG_VERSION=
+PKG_VERSION=0.0.0
 SKIP_SETUP=0
 SRC_NAME=adaptive-link
 
