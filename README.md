@@ -198,3 +198,12 @@ at `https://github.com/my-user/my-app`.
    the DEB package.
 5. Add `do_my-app` function to `build.sh` that will clone the code, copy the `debian` dir into it
    and call `make deb` from inside the container. Add `MY_APP_GIT_VSN` and `MY_APP_DEB_VSN` variables.
+
+How to upgrade package
+----------------------
+
+1. Edit the `build.sh` and update `MY_APP_GIT_VSN` and, if necessary, `MY_APP_DEB_VSN`.
+2. Checkout this GIT version (tag/branch/commit) and run
+   `git log --date=format:%Y%m%d --pretty=${MY_APP_DEB_VSN}~git%cd.%h | head -n 1`
+3. In the `my-app/` directory run `dch -v <version>` to add new version to `my-app/debian/changelog`
+   and edit the changelog release notes.

@@ -42,10 +42,12 @@ jobs:
         run: |
           ./build.sh --debian-codename ${{ matrix.debian_codename }} pixelpilot rtl8812au rtl8812eu rtl8733bu adaptive_link msposd
           sudo rm -r .${{ matrix.debian_codename }}_apt_cache/archives/{lock,partial}
-          ls */*.deb
-      # - name: Upload binary
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: ${{ matrix.debian_codename }}-bin
-      #     path: |
-      #       ${{ matrix.debian_codename }}_pixelpilot
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.debian_codename }}-deb
+          path: |
+            */*.deb
+            */*.buildinfo
+            */*.changes
+            */*.orig.tar.?z

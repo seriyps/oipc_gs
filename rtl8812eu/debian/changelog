@@ -1,4 +1,4 @@
-rtl8812eu (5.15.0-1) UNRELEASED; urgency=medium
+rtl8812eu (5.15.0~git20241129.eeeb886-1) UNRELEASED; urgency=medium
 
   * Initial release.
 
