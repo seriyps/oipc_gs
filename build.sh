@@ -15,6 +15,9 @@ RTL8733BU_DEB_VER="5.15.12"
 ALINK_GIT_VER="3a831a75cb25df403374fa5104ea494c140695da"
 ALINK_DEB_VER="0.63.0"
 
+MSPOSD_GIT_VER="694221a59e4b17fd4324d24337a7bf3293127dcf"
+MSPOSD_DEB_VER="1.0.0"
+
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
 
@@ -101,7 +104,7 @@ do_umount() {
 }
 
 do_clean() {
-    for app in pixelpilot rtl8812au rtl8812eu rtl8733bu adaptive-link ; do
+    for app in pixelpilot rtl8812au rtl8812eu rtl8733bu adaptive-link msposd; do
         cd $app/
         make clean
         cd ..
@@ -196,6 +199,9 @@ do_rtl8733bu() {
     umount_raw_disk
 }
 
+#
+# Adaptive Link
+#
 
 build_adaptive_link_deb() {
     cd adaptive-link/
@@ -225,6 +231,40 @@ build_adaptive_link_deb() {
 do_adaptive_link() {
     mount_raw_disk
     build_adaptive_link_deb
+    umount_raw_disk
+}
+
+
+#
+# MspOsd
+#
+
+build_msposd_deb() {
+    cd msposd/
+    if [ ! -d "msposd" ]; then
+        git clone https://github.com/OpenIPC/msposd.git
+    fi
+    cd msposd/
+    git checkout $MSPOSD_GIT_VER
+    DEB_VER=$(mk_git_deb_version $MSPOSD_DEB_VER)
+    git archive $MSPOSD_GIT_VER | xz > ../msposd_${DEB_VER}.orig.tar.xz
+    cd ..
+    SRCDIR=msposd_${DEB_VER}
+    rm -rf $SRCDIR
+    mkdir $SRCDIR
+    tar -axf msposd_${DEB_VER}.orig.tar.xz -C $SRCDIR
+    cp -r debian/ $SRCDIR/debian
+    sudo mkdir -p $MOUNT/usr/src/msposd
+    sudo mount --bind $(pwd) $MOUNT/usr/src/msposd
+    sudo chroot $MOUNT /usr/bin/make -C /usr/src/msposd -f /usr/src/msposd/Makefile \
+         DEB_VER=$DEB_VER DEBIAN_CODENAME=$DEBIAN_CODENAME
+    sudo umount $MOUNT/usr/src/msposd
+}
+
+# Build MspOsd package
+do_msposd() {
+    mount_raw_disk
+    build_msposd_deb
     umount_raw_disk
 }
 

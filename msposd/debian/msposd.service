@@ -1,0 +1,11 @@
+[Unit]
+Description=OpenIPC MSP/DisplayPort OSD
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/msposd
+ExecStart=/usr/bin/msposd $DVR $ARGS
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

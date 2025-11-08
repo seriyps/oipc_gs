@@ -1,0 +1,24 @@
+Source: msposd
+Section: unknown
+Priority: optional
+Maintainer: Sergey Prokhorov <seriy.pr@gmail.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ bc,
+ libcairo-dev,
+ libevent-dev,
+Standards-Version: 4.7.2
+Homepage: https://github.com/OpenIPC/msposd
+#Vcs-Browser: https://salsa.debian.org/debian/msposd
+#Vcs-Git: https://salsa.debian.org/debian/msposd.git
+
+Package: msposd
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: MspOsd rendering on the ground station
+ Package contains a MSP OSD rendering on the ground station side.
+ It reads MSP/DisplayPort packets from UDP and renders them on a shared
+ memory plane.

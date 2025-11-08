@@ -1,0 +1,2 @@
+ARGS="--master 127.0.0.1:14550 --baudrate 115200 --osd -r 50 --ahi 3 --matrix 11 -v"
+DVR="--subtitle /var/dvr"

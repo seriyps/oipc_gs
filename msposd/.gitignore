@@ -1,0 +1,7 @@
+msposd/
+msposd_*/
+msposd_*.orig.tar.xz
+msposd_*.deb
+msposd-dbgsym_*.deb
+msposd_*.buildinfo
+msposd_*.changes

@@ -1,0 +1,10 @@
+# Example file for upstream/metadata.
+# See https://wiki.debian.org/UpstreamMetadata for more info/fields.
+# Below an example based on a github project.
+
+Bug-Database: https://github.com/OpenIPC/msposd
+# Bug-Submit: https://github.com/<user>/msposd/issues/new
+# Changelog: https://github.com/<user>/msposd/blob/master/CHANGES
+# Documentation: https://github.com/<user>/msposd/wiki
+Repository-Browse: https://github.com/OpenIPC/msposd
+Repository: https://github.com/OpenIPC/msposd.git

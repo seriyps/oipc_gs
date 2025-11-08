@@ -34,9 +34,9 @@ Given that, how this should be achieved:
   packages, ideally coming from DEB repos; so we'd need to package all the software:
   * ✅ pixelpilot
   * ✅ wfb-ng
-  * ❌ wifi-drivers (DKMS)
-  * ❌ msposd
-  * ❌ adaptive-link
+  * ✅ wifi-drivers (DKMS)
+  * ✅ msposd
+  * ✅ adaptive-link
   * ❌ extras - like PWM fan, INA226, RTC, wifi-card autodetect, .dts/.dtbo files etc
 * create an umbrella-packages like `openipc-gs-base` / `openipc-gs-runcam` / `openipc-gs-full` etc
   which would mainly declare correct dependencies and tweak some of the configs
@@ -45,11 +45,11 @@ Given that, how this should be achieved:
   prepared when new Debian version comes out)
 * let vendors propose meta-packages for their hardware (so any vendor can propose and maintain
   their own version of `openipc-gs-runcam` / `openipc-gs-emax` etc).
-* those deb packages can be used to build the disk images, however the building of the image should
+* those deb packages can be used to build the OS disk images, however the building of the image should
   ideally just end-up in adding our DEB repos and then
   `sudo apt install openipc-gs-<runcam|base|full|emacs>; sudo apt clean` inside official
   Radxa Debian image. Software upgrades can be also performed by `sudo apt upgrade`.
-* build and publish multiple images for different hardware
+* build and publish multiple OS images for different hardware
 * we may consider building our own Debian image from scratch instead of it being based on Radxa image
   and also to try to strip as much of unused software as possible to reduce the size and start-up time
   but this is not the highest priority
@@ -63,7 +63,7 @@ Are we there yet?
   * [x] RTL8812AU
   * [x] RTL8812EU
   * [x] RTL8733BU
-* [ ] msposd deb package
+* [x] msposd deb package
 * [x] adaptive-link deb package
 * [ ] extras
   * [ ] PWM-fan (either daemon or kernel thermal zones / hwmon)
@@ -92,7 +92,7 @@ via DKMS
 
 * RTL8812au https://github.com/svpcom/rtl8812au
 * RTL8812eu https://github.com/svpcom/rtl8812eu
-* RTL8733BU https://github.com/libc0607/rtl8733bu-20240806
+* RTL8733bu https://github.com/libc0607/rtl8733bu-20240806
 
 ### mposd
 
@@ -190,7 +190,7 @@ at `https://github.com/my-user/my-app`.
    It can be created by `dh_make --createorig`, but then the .orig would include `.git` directory,
    so we use `git archive` instead.
 3. Initialize the `debian/` folder `cd my-app/; dh_make --packagename my-app_1.2.3 --single -f my-app_1.2.3.orig.tar.xz`
-4. Edit the contents of this `debian/` folder; make sure changelog contains the right version, eg
+4. Edit the contents of this `debian/` folder; (!!) make sure changelog contains the right version, eg
    `git log --date=format:%Y%m%d --pretty=${MY_APP_DEB_VSN}~git%cd.%h | head -n 1`.
    Use `dch -v $VSN` if needed.
 5. Create the `my-app/Makefile` - makefile that should have `deb` and `clean` targets. `deb` will

@@ -11,5 +11,5 @@ clean:
 	rm -f adaptive-link_*.buildinfo
 	rm -f adaptive-link_*.changes
 	rm -f adaptive-link_*.orig.tar.xz
-	rm -rf adaptive-link_*/
+	sudo rm -rf adaptive-link_*/
 

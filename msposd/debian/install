@@ -1,0 +1,7 @@
+msposd /usr/bin/
+fonts/font_ardu.png /usr/share/fonts/
+fonts/font_ardu_hd.png /usr/share/fonts/
+fonts/font_btfl.png /usr/share/fonts/
+fonts/font_btfl_hd.png /usr/share/fonts/
+fonts/font_inav.png /usr/share/fonts/
+fonts/font_inav_hd.png /usr/share/fonts/
