@@ -1,0 +1,26 @@
+Source: adaptive-link
+Section: unknown
+Priority: optional
+Maintainer: Sergey Prokhorov <seriy.pr@gmail.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-python3,
+ python3-setuptools,
+ python3-all,
+#Testsuite: autopkgtest-pkg-python
+Standards-Version: 4.7.2
+Homepage: https://github.com/OpenIPC/adaptive-link
+#Vcs-Browser: https://salsa.debian.org/debian/adaptive-link
+#Vcs-Git: https://salsa.debian.org/debian/adaptive-link.git
+
+Package: python3-adaptive-link-gs
+Architecture: all
+Depends:
+ ${python3:Depends},
+ ${misc:Depends},
+ wfb-ng,
+Description: OpenIPC adaptive link ground station daemon (Python 3)
+ Package includes OpenIPC adaptive link daemon for ground station.
+ .
+ This package installs the library for Python 3.

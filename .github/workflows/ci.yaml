@@ -40,9 +40,9 @@ jobs:
 
       - name: Build
         run: |
-          ./build.sh --debian-codename ${{ matrix.debian_codename }} pixelpilot rtl8812au rtl8812eu rtl8733bu
+          ./build.sh --debian-codename ${{ matrix.debian_codename }} pixelpilot rtl8812au rtl8812eu rtl8733bu adaptive_link
           sudo rm -r .${{ matrix.debian_codename }}_apt_cache/archives/{lock,partial}
-
+          ls */*.deb
       # - name: Upload binary
       #   uses: actions/upload-artifact@v4
       #   with:

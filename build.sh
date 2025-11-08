@@ -12,6 +12,9 @@ RTL8812EU_DEB_VER="5.15.0"
 RTL8733BU_GIT_VER="2ec19e154cffbc2abd98d43d59278dffa6e50d49"
 RTL8733BU_DEB_VER="5.15.12"
 
+ALINK_GIT_VER="3a831a75cb25df403374fa5104ea494c140695da"
+ALINK_DEB_VER="0.63.0"
+
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
 
@@ -98,7 +101,7 @@ do_umount() {
 }
 
 do_clean() {
-    for app in pixelpilot rtl8812au rtl8812eu rtl8733bu; do
+    for app in pixelpilot rtl8812au rtl8812eu rtl8733bu adaptive-link ; do
         cd $app/
         make clean
         cd ..
@@ -190,6 +193,38 @@ do_rtl8733bu() {
     #build_rtl8733bu_deb
     build_rtl_dkms_deb rtl8733bu https://github.com/libc0607/rtl8733bu-20240806.git \
         $RTL8733BU_GIT_VER $RTL8733BU_DEB_VER
+    umount_raw_disk
+}
+
+
+build_adaptive_link_deb() {
+    cd adaptive-link/
+    if [ ! -d "adaptive-link" ]; then
+        git clone https://github.com/OpenIPC/adaptive-link.git
+    fi
+    cd adaptive-link/
+    git checkout $ALINK_GIT_VER
+    DEB_VER=$(mk_git_deb_version $ALINK_DEB_VER)
+    git archive $ALINK_GIT_VER | xz > ../adaptive-link_${DEB_VER}.orig.tar.xz
+    cd ..
+    SRCDIR=adaptive-link_${DEB_VER}
+    rm -rf $SRCDIR
+    mkdir $SRCDIR
+    tar -axf adaptive-link_${DEB_VER}.orig.tar.xz -C $SRCDIR
+    cp -r debian/ $SRCDIR/debian
+    sudo mkdir -p $MOUNT/usr/src/adaptive-link
+    sudo mount --bind $(pwd) $MOUNT/usr/src/adaptive-link
+
+    sudo chroot $MOUNT /usr/bin/make -C /usr/src/adaptive-link -f /usr/src/adaptive-link/Makefile \
+         DEB_VER=$DEB_VER DEBIAN_CODENAME=$DEBIAN_CODENAME
+
+    sudo umount $MOUNT/usr/src/adaptive-link
+}
+
+# Build Adaptive Link package
+do_adaptive_link() {
+    mount_raw_disk
+    build_adaptive_link_deb
     umount_raw_disk
 }
 

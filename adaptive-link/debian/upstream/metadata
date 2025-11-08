@@ -1,0 +1,10 @@
+# Example file for upstream/metadata.
+# See https://wiki.debian.org/UpstreamMetadata for more info/fields.
+# Below an example based on a github project.
+
+Bug-Database: https://github.com/OpenIPC/adaptive-link/issues
+# Bug-Submit: https://github.com/<user>/adaptive-link/issues/new
+# Changelog: https://github.com/<user>/adaptive-link/blob/master/CHANGES
+# Documentation: https://github.com/<user>/adaptive-link/wiki
+Repository-Browse: https://github.com/OpenIPC/adaptive-link
+Repository: https://github.com/OpenIPC/adaptive-link.git

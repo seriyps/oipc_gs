@@ -64,7 +64,7 @@ Are we there yet?
   * [x] RTL8812EU
   * [x] RTL8733BU
 * [ ] msposd deb package
-* [ ] adaptive-link deb package
+* [x] adaptive-link deb package
 * [ ] extras
   * [ ] PWM-fan (either daemon or kernel thermal zones / hwmon)
   * [ ] voltage/current/power sensor INA226

@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenIPC Adaptive_Link
+
+[Service]
+ExecStart=/usr/bin/alink_gs --config /etc/alink_gs.conf
+Type=idle
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

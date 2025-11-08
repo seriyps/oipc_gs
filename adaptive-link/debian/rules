@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+# See debhelper(7) (uncomment to enable).
+# Output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	# Do nothing, because makefile builds only the C part.
+	# The Python part doesn't need building because it's pure Python without any deps.
+
+override_dh_installsystemd:
+	dh_installsystemd --restart-after-upgrade --name=alink_gs
