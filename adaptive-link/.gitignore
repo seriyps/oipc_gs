@@ -1,6 +1,8 @@
 adaptive-link/
 adaptive-link_*/
 adaptive-link_*.orig.tar.xz
+adaptive-link_*.debian.tar.xz
+adaptive-link_*.dsc
 python3-adaptive-link-gs_*.deb
 adaptive-link_*.buildinfo
 adaptive-link_*.changes
