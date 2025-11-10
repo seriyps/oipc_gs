@@ -1,6 +1,8 @@
 rtl8812au/
 rtl8812au_*/
 rtl8812au_*.orig.tar.xz
+rtl8812au_*.debian.tar.xz
+rtl8812au_*.dsc
 rtl8812au-dkms_*.deb
 rtl8812au_*.buildinfo
 rtl8812au_*.changes

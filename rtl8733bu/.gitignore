@@ -1,6 +1,8 @@
 rtl8733bu/
 rtl8733bu_*/
 rtl8733bu_*.orig.tar.xz
+rtl8733bu_*.debian.tar.xz
+rtl8733bu_*.dsc
 rtl8733bu-dkms_*.deb
 rtl8733bu_*.buildinfo
 rtl8733bu_*.changes

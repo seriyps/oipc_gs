@@ -21,6 +21,7 @@ MSPOSD_DEB_VER="1.0.0"
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
 
+GPG_KEY_ID="7E2CA22D6D61824C"
 
 POS_ARGS=()
 while [[ $# -gt 0 ]]; do
@@ -51,6 +52,14 @@ APT_CACHE=$ROOT/.${DEBIAN_CODENAME}_apt_cache/
 # Common
 #
 
+APPS=("pixelpilot" "rtl8812au" "rtl8812eu" "rtl8733bu" "adaptive_link" "msposd")
+APPS_DIRS=()
+
+for app in "${APPS[@]}"; do
+    # Replace '_' with '-' and add to the new array
+    APPS_DIRS+=("${app//_/-}")
+done
+
 mk_git_deb_version() {
     echo `git log --date=format:%Y%m%d --pretty=$1~git%cd.%h | head -n 1`
 }
@@ -58,7 +67,7 @@ mk_git_deb_version() {
 # Ensure required dependencies are installed
 do_install_dependencies() {
     sudo apt-get update
-    sudo apt-get install -y tar git qemu-user-static
+    sudo apt-get install -y tar git qemu-user-static gpg aptly
 }
 
 get_debian_image() {
@@ -70,29 +79,37 @@ get_debian_image() {
 get_raw_disk() {
     get_debian_image
     tar -xf $ROOT/${DEBIAN_SYSTEM}.xz
+    mv $ROOT/disk.raw $ROOT/$DEBIAN_CODENAME-disk.raw
+}
+
+init_raw_disk() {
+    mount_raw_disk
+    sudo rm $MOUNT/etc/resolv.conf
+    echo nameserver 1.1.1.1 | sudo tee -a $MOUNT/etc/resolv.conf
+    if [ ! -f $MOUNT/usr/local/bin/init_image.sh ]; then
+        sudo cp init_image.sh $MOUNT/usr/local/bin/
+        sudo chroot $MOUNT /usr/local/bin/init_image.sh --debian-codename $DEBIAN_CODENAME
+    fi
 }
 
 mount_raw_disk() {
-    if [ ! -f "disk.raw" ]; then
+    if [ ! -f "$DEBIAN_CODENAME-disk.raw" ]; then
         get_raw_disk
     fi
     mkdir $MOUNT || true
-    sudo mount `sudo losetup -P --show -f disk.raw`p1 $MOUNT
+    sudo mount `sudo losetup -P --show -f $DEBIAN_CODENAME-disk.raw`p1 $MOUNT
 	mkdir $APT_CACHE || true
 	sudo mount -o bind $APT_CACHE $MOUNT/var/cache/apt
     sudo mkdir -p $MOUNT/dev
     sudo touch $MOUNT/dev/null
     sudo mount -o bind /dev/null $MOUNT/dev/null
-    sudo rm $MOUNT/etc/resolv.conf
-    echo nameserver 1.1.1.1 | sudo tee -a $MOUNT/etc/resolv.conf
-    sudo chroot $MOUNT /usr/bin/sh -c "[ -f /usr/bin/make ] || (apt update ; apt install make)"
 }
 
 umount_raw_disk() {
     sudo umount $MOUNT/var/cache/apt
     sudo umount $MOUNT/dev/null
     sudo umount $MOUNT
-    sudo losetup --detach `losetup | grep disk.raw | cut -f 1 -d " "`
+    sudo losetup --detach `losetup | grep $DEBIAN_CODENAME-disk.raw | cut -f 1 -d " "`
 }
 
 do_mount() {
@@ -104,7 +121,7 @@ do_umount() {
 }
 
 do_clean() {
-    for app in pixelpilot rtl8812au rtl8812eu rtl8733bu adaptive-link msposd; do
+    for app in ${APPS_DIRS[@]}; do
         cd $app/
         make clean
         cd ..
@@ -136,7 +153,7 @@ build_pixelpilot_deb() {
 
 # Build PixelPilot package
 do_pixelpilot() {
-    mount_raw_disk
+    init_raw_disk
     build_pixelpilot_deb
     umount_raw_disk
 }
@@ -168,6 +185,10 @@ build_rtl_dkms_deb() {
     sudo mkdir -p $MOUNT/usr/src/${NAME}
     sudo mount --bind $(pwd) $MOUNT/usr/src/${NAME}
 
+    # FIXME: DKMS deb package should not build the module! Only package the source!
+    # Should probably patch `debian/rules` to remove the module build step:
+    # override_dh_auto_build:
+    #     true
     sudo chroot $MOUNT /usr/bin/make -C /usr/src/${NAME} -f /usr/src/${NAME}/Makefile \
          DEB_VER=$DEB_VER DEBIAN_CODENAME=$DEBIAN_CODENAME
 
@@ -176,7 +197,7 @@ build_rtl_dkms_deb() {
 
 # Build RTL8812AU package
 do_rtl8812au() {
-    mount_raw_disk
+    init_raw_disk
     build_rtl_dkms_deb rtl8812au https://github.com/svpcom/rtl8812au.git \
         $RTL8812AU_GIT_VER $RTL8812AU_DEB_VER
     umount_raw_disk
@@ -184,7 +205,7 @@ do_rtl8812au() {
 
 # Build RTL8812EU package
 do_rtl8812eu() {
-    mount_raw_disk
+    init_raw_disk
     build_rtl_dkms_deb rtl8812eu https://github.com/svpcom/rtl8812eu.git \
         $RTL8812EU_GIT_VER $RTL8812EU_DEB_VER
     umount_raw_disk
@@ -192,8 +213,7 @@ do_rtl8812eu() {
 
 # Build RTL8733BU package
 do_rtl8733bu() {
-    mount_raw_disk
-    #build_rtl8733bu_deb
+    init_raw_disk
     build_rtl_dkms_deb rtl8733bu https://github.com/libc0607/rtl8733bu-20240806.git \
         $RTL8733BU_GIT_VER $RTL8733BU_DEB_VER
     umount_raw_disk
@@ -229,7 +249,7 @@ build_adaptive_link_deb() {
 
 # Build Adaptive Link package
 do_adaptive_link() {
-    mount_raw_disk
+    init_raw_disk
     build_adaptive_link_deb
     umount_raw_disk
 }
@@ -263,9 +283,35 @@ build_msposd_deb() {
 
 # Build MspOsd package
 do_msposd() {
-    mount_raw_disk
+    init_raw_disk
     build_msposd_deb
     umount_raw_disk
+}
+
+# Build all .deb packages
+do_all_deb() {
+    for app in ${APPS[@]}; do
+        do_$app
+        cd $ROOT
+    done
+}
+
+# Create APT repository with packages, built with commands like 'do_all_deb' or individual package build commands
+do_apt_repository() {
+    DEB_REPO_ORIGIN="oipc-$DEBIAN_CODENAME"
+    aptly publish drop -force-drop "$DEBIAN_CODENAME" "$DEB_REPO_ORIGIN" || true
+    aptly repo drop -force "$DEBIAN_CODENAME" || true
+    aptly db cleanup
+
+    aptly repo create -distribution="$DEBIAN_CODENAME" -component="main" "$DEBIAN_CODENAME"
+    # Add built .deb (binary) and .dsc (source) files to the repository
+    for deb in */*.{deb,dsc}; do
+        aptly repo add "$DEBIAN_CODENAME" "$deb"
+    done
+    aptly publish repo -skip-signing -architectures="arm64,all,source" -origin="$DEB_REPO_ORIGIN" -label="$DEB_REPO_ORIGIN" "$DEBIAN_CODENAME" "$DEB_REPO_ORIGIN"
+    DISTRO_PATH=~/.aptly/public/$DEB_REPO_ORIGIN/dists/$DEBIAN_CODENAME
+    gpg --yes --batch --armor -u $GPG_KEY_ID --clear-sign  -o "$DISTRO_PATH/InRelease"   "$DISTRO_PATH/Release"
+    gpg --yes --batch --armor -u $GPG_KEY_ID --detach-sign -o "$DISTRO_PATH/Release.gpg" "$DISTRO_PATH/Release"
 }
 
 set -x

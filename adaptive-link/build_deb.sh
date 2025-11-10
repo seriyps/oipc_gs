@@ -29,14 +29,7 @@ done
 
 
 if [ $SKIP_SETUP -lt 1 ]; then
-    # needed for GPG tools to work
-    if [ ! -e /dev/null ]; then
-        mknod /dev/null c 1 3
-        chmod 666 /dev/null
-    fi
-
-    apt-get update
-    apt-get install -y cmake build-essential pkg-config devscripts equivs
+    apt-get install -y build-essential pkg-config devscripts equivs
 fi
 
 SRCDIR=${SRC_NAME}_${PKG_VERSION}
@@ -49,4 +42,4 @@ mk-build-deps
 apt-get install -y ./$BUILD_DEPS_FILE
 rm ${SRC_NAME}-build-deps*
 
-dpkg-buildpackage -uc -us -b
+dpkg-buildpackage -uc -us

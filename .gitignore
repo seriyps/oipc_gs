@@ -1,5 +1,5 @@
 debian-*-arm64.tar.xz
-disk.raw
+*-disk.raw
 .bookworm_apt_cache/
 .bullseye_apt_cache/
 ina2xx/*.dtbo

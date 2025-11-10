@@ -10,5 +10,7 @@ clean:
 	sudo rm -rf rtl8812au-dkms_*.deb
 	sudo rm -rf rtl8812au_*.buildinfo
 	sudo rm -rf rtl8812au_*.changes
+	sudo rm -rf rtl8812au_*.dsc
+	sudo rm -rf rtl8812au_*.debian.tar.xz
 	sudo rm -rf rtl8812au_*.orig.tar.xz
 	sudo rm -rf rtl8812au_*/

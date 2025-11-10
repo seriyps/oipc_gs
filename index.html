@@ -1,0 +1,41 @@
+<!DOCTYPE html!>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Oipc ground station DEB repository</title>
+    </head>
+    <body>
+        <header>
+            <h1>Oipc ground station DEB repository</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="https://github.com/seriyps/oipc_gs">Project repo</a></li>
+                <li><a href="/oipc_gs/oipc-bookworm/">Bookworm DEB</a></li>
+                <li><a href="/oipc_gs/oipc-bullseye/">Bullseye DEB</a></li>
+            </ul>
+        </nav>
+        <main>
+            <section>
+                <h2>Import GPG key</h2>
+                <pre><code>wget -qO - https://seriyps.github.io/oipc_gs/public.gpg | sudo gpg -o /usr/share/keyrings/oipc_gs.gpg</code></pre>
+            </section>
+            <section>
+                <h2>Add repository to bookworm</h2>
+                <pre><code>echo "deb [signed-by=/usr/share/keyrings/oipc_gs.gpg] https://seriyps.github.io/oipc_gs/oipc-bookworm bookworm main" | sudo tee /etc/apt/sources.list.d/oipc_gs.list</code></pre>
+                <h2>Add repository to bullseye</h2>
+                <pre><code>echo "deb [signed-by=/usr/share/keyrings/oipc_gs.gpg] https://seriyps.github.io/oipc_gs/oipc-bullseye bullseye main" | sudo tee /etc/apt/sources.list.d/oipc_gs.list</code></pre>
+            </section>
+            <section>
+                <h2>Install Oipc ground station</h2>
+                <pre><code>
+    sudo apt update
+    sudo apt install openipc-gs-radxa3-basic
+                </code></pre>
+        </main>
+        <footer>
+            <p>&copy; 2025 Sergey Prokhorov</p>
+        </footer>
+    </body>
+</html>

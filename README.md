@@ -71,6 +71,7 @@ Are we there yet?
   * [ ] RTC (autonomous clocks)
   * [ ] WiFi card autodetect
   * [ ] Various .dts / .dtbo files (would probably vary depending on the hardware)
+* [ ] Debian repository
 * [ ] misc software (WiFi access point; SAMBA; USB MTP; USB Ethernet card)
 * [ ] OS image building
 * [ ] custom base Debian image (stripped for smaller size and start-up time)

@@ -10,5 +10,7 @@ clean:
 	sudo rm -rf rtl8733bu-dkms_*.deb
 	sudo rm -rf rtl8733bu_*.buildinfo
 	sudo rm -rf rtl8733bu_*.changes
+	sudo rm -rf rtl8733bu_*.dsc
+	sudo rm -rf rtl8733bu_*.debian.tar.xz
 	sudo rm -rf rtl8733bu_*.orig.tar.xz
 	sudo rm -rf rtl8733bu_*/

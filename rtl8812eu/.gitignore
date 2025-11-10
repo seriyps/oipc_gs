@@ -1,6 +1,8 @@
 rtl8812eu/
 rtl8812eu_*/
 rtl8812eu_*.orig.tar.xz
+rtl8812eu_*.debian.tar.xz
+rtl8812eu_*.dsc
 rtl8812eu-dkms_*.deb
 rtl8812eu_*.buildinfo
 rtl8812eu_*.changes

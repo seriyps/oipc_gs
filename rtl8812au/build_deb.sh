@@ -30,31 +30,7 @@ done
 
 
 if [ $SKIP_SETUP -lt 1 ]; then
-    # needed for GPG tools to work
-    if [ ! -e /dev/null ]; then
-        mknod /dev/null c 1 3
-        chmod 666 /dev/null
-    fi
-
-    keyring="${ROOTDIR}/keyring.deb"
-    version="$(curl -L https://github.com/radxa-pkg/radxa-archive-keyring/releases/latest/download/VERSION)"
-    curl -L --output "$keyring" "https://github.com/radxa-pkg/radxa-archive-keyring/releases/download/${version}/radxa-archive-keyring_${version}_all.deb"
-    dpkg -i $keyring
-    rm $keyring
-
-    case $DEBIAN_CODENAME in
-        bookworm)
-            tee /etc/apt/sources.list.d/70-radxa.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/bookworm/ bookworm main"
-            tee /etc/apt/sources.list.d/80-radxa-rk3566.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/rk3566-bookworm rk3566-bookworm main"
-            ;;
-        bullseye)
-            tee /etc/apt/sources.list.d/70-radxa.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/bullseye/ bullseye main"
-            tee /etc/apt/sources.list.d/80-rockchip.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/bullseye rockchip-bullseye main"
-            ;;
-    esac
-
-    apt-get update
-    apt-get install -y cmake build-essential git pkg-config devscripts equivs linux-headers-$KVER dkms
+    apt-get install -y build-essential git pkg-config devscripts equivs linux-headers-$KVER dkms
 fi
 
 SRCDIR=${SRC_NAME}_${PKG_VERSION}
@@ -67,4 +43,4 @@ mk-build-deps
 apt-get install -y ./$BUILD_DEPS_FILE
 rm ${SRC_NAME}-build-deps*
 
-dpkg-buildpackage -uc -us -b
+dpkg-buildpackage -uc -us

@@ -10,6 +10,8 @@ clean:
 	rm -f python3-adaptive-link-gs_*_all.deb
 	rm -f adaptive-link_*.buildinfo
 	rm -f adaptive-link_*.changes
+	rm -f adaptive-link_*.dsc
+	rm -f adaptive-link_*.debian.tar.xz
 	rm -f adaptive-link_*.orig.tar.xz
 	sudo rm -rf adaptive-link_*/
 
