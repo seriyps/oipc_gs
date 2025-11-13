@@ -100,20 +100,31 @@ mount_raw_disk() {
     sudo mount `sudo losetup -P --show -f $DEBIAN_CODENAME-disk.raw`p1 $MOUNT
 	mkdir $APT_CACHE || true
 	sudo mount -o bind $APT_CACHE $MOUNT/var/cache/apt
-    sudo mkdir -p $MOUNT/dev
-    sudo touch $MOUNT/dev/null
-    sudo mount -o bind /dev/null $MOUNT/dev/null
+
+    sudo mount -t proc /proc $MOUNT/proc
+    sudo mount -t sysfs /sys $MOUNT/sys
+    sudo mount -o bind /dev $MOUNT/dev
+    sudo mount -o bind /run $MOUNT/run
+    sudo mount -t devpts devpts $MOUNT/dev/pts
 }
 
 umount_raw_disk() {
     sudo umount $MOUNT/var/cache/apt
-    sudo umount $MOUNT/dev/null
+    sudo umount $MOUNT/dev/pts
+    sudo umount $MOUNT/proc
+    sudo umount $MOUNT/sys
+    sudo umount $MOUNT/dev
+    sudo umount $MOUNT/run
     sudo umount $MOUNT
     sudo losetup --detach `losetup | grep $DEBIAN_CODENAME-disk.raw | cut -f 1 -d " "`
 }
 
 do_mount() {
     mount_raw_disk
+}
+
+do_init_disk() {
+    init_raw_disk
 }
 
 do_umount() {

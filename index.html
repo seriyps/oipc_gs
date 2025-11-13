@@ -12,14 +12,12 @@
         <nav>
             <ul>
                 <li><a href="https://github.com/seriyps/oipc_gs">Project repo</a></li>
-                <li><a href="/oipc_gs/oipc-bookworm/">Bookworm DEB</a></li>
-                <li><a href="/oipc_gs/oipc-bullseye/">Bullseye DEB</a></li>
             </ul>
         </nav>
         <main>
             <section>
                 <h2>Import GPG key</h2>
-                <pre><code>wget -qO - https://seriyps.github.io/oipc_gs/public.gpg | sudo gpg -o /usr/share/keyrings/oipc_gs.gpg</code></pre>
+                <pre><code>curl -s https://seriyps.github.io/oipc_gs/public.gpg | sudo gpg --dearmor -o /usr/share/keyrings/oipc_gs.gpg</code></pre>
             </section>
             <section>
                 <h2>Add repository to bookworm</h2>
@@ -28,11 +26,31 @@
                 <pre><code>echo "deb [signed-by=/usr/share/keyrings/oipc_gs.gpg] https://seriyps.github.io/oipc_gs/oipc-bullseye bullseye main" | sudo tee /etc/apt/sources.list.d/oipc_gs.list</code></pre>
             </section>
             <section>
+                <h2>Add WFB-NG repository</h2>
+                <p>See <a href="https://apt.wfb-ng.org/">https://apt.wfb-ng.org/</a></p>
+                <pre><code>
+curl -s https://apt.wfb-ng.org/public.asc | sudo gpg --dearmor --yes -o /usr/share/keyrings/wfb-ng.gpg
+echo "deb [signed-by=/usr/share/keyrings/wfb-ng.gpg] https://apt.wfb-ng.org/ $(lsb_release -cs) release-25.01" | sudo tee /etc/apt/sources.list.d/wfb-ng.list
+                </code></pre>
+            </section>
+            <section>
                 <h2>Install Oipc ground station</h2>
                 <pre><code>
     sudo apt update
     sudo apt install openipc-gs-radxa3-basic
                 </code></pre>
+            </section>
+            <section>
+                <h2>Available packages</h2>
+                <ul>
+                    <li>python3-adaptive-link-gs - Adaptive link ground station daemon</li>
+                    <li>msposd - Msp OSD ground-station rendering daemon</li>
+                    <li>pixelpilot-rk - PixelPilot for Rockchip-based boards</li>
+                    <li>rtl8733bu-dkms - patched RTL8733BU DKMS WiFi driver</li>
+                    <li>rtl8812au-dkms - patched RTL8812AU DKMS WiFi driver</li>
+                    <li>rtl8812eu-dkms - patched RTL8812EU DKMS WiFi driver</li>
+                </ul>
+            </section>
         </main>
         <footer>
             <p>&copy; 2025 Sergey Prokhorov</p>

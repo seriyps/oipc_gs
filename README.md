@@ -71,7 +71,7 @@ Are we there yet?
   * [ ] RTC (autonomous clocks)
   * [ ] WiFi card autodetect
   * [ ] Various .dts / .dtbo files (would probably vary depending on the hardware)
-* [ ] Debian repository
+* [ ] Debian repository (IN PROGRESS)
 * [ ] misc software (WiFi access point; SAMBA; USB MTP; USB Ethernet card)
 * [ ] OS image building
 * [ ] custom base Debian image (stripped for smaller size and start-up time)
@@ -83,9 +83,13 @@ Installed software
 
 Installed from APT repository https://apt.wfb-ng.org/
 
+Deb package: `wfb-ng`.
+
 ### Pixelpilot-rk
 
 https://github.com/OpenIPC/PixelPilot_rk/
+
+Deb package: `pixelpilot-rk`
 
 ### WiFi drivers
 
@@ -95,13 +99,19 @@ via DKMS
 * RTL8812eu https://github.com/svpcom/rtl8812eu
 * RTL8733bu https://github.com/libc0607/rtl8733bu-20240806
 
-### mposd
+Deb packages: `rtl8812au-dkms`, `rtl-8812eu-dkms`, `rtl8733bu-dkms`.
+
+### msposd
 
 https://github.com/OpenIPC/msposd
+
+Deb package: `msposd`
 
 ### Adaptive link
 
 https://github.com/OpenIPC/adaptive-link
+
+Deb package: `alink_gs`.
 
 ### INA226 overlay
 
