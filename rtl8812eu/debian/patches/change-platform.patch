@@ -1,0 +1,17 @@
+Driver should be built for arm64, not i386
+Index: rtl8812eu_5.15.0~git20241129.eeeb886/Makefile
+===================================================================
+--- rtl8812eu_5.15.0~git20241129.eeeb886.orig/Makefile
++++ rtl8812eu_5.15.0~git20241129.eeeb886/Makefile
+@@ -176,9 +176,9 @@ CONFIG_SECURE_DMA = n
+ CONFIG_SECURE_DMA_MEM_ADDR = 0
+ CONFIG_SECURE_DMA_MEM_SIZE = 3686400
+ ###################### Platform Related #######################
+-CONFIG_PLATFORM_I386_PC = y
++CONFIG_PLATFORM_I386_PC = n
+ CONFIG_PLATFORM_ARM_RPI = n
+-CONFIG_PLATFORM_ARM64_RPI = n
++CONFIG_PLATFORM_ARM64_RPI = y
+ CONFIG_PLATFORM_ANDROID_X86 = n
+ CONFIG_PLATFORM_ANDROID_INTEL_X86 = n
+ CONFIG_PLATFORM_JB_X86 = n

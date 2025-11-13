@@ -218,3 +218,4 @@ How to upgrade package
    `git log --date=format:%Y%m%d --pretty=${MY_APP_DEB_VSN}~git%cd.%h | head -n 1`
 3. In the `my-app/` directory run `dch -v <version>` to add new version to `my-app/debian/changelog`
    and edit the changelog release notes.
+4. For DKMS packages make sure PACKAGE_VERSION in `debian/dkms` matches the one from changelog.

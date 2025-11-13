@@ -1,1 +1,9 @@
-dkms.conf
+PACKAGE_NAME="rtl8812eu"
+PACKAGE_VERSION="5.15.0~git20241129.eeeb886-1"
+CLEAN="'make' clean"
+BUILT_MODULE_NAME[0]=8812eu
+PROCS_NUM=`nproc`
+[ $PROCS_NUM -gt 16 ] && PROCS_NUM=16
+DEST_MODULE_LOCATION[0]="/updates"
+MAKE="'make' -j$PROCS_NUM KVER=${kernelver} KSRC=/lib/modules/${kernelver}/build"
+AUTOINSTALL="yes"
