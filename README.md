@@ -219,3 +219,4 @@ How to upgrade package
 3. In the `my-app/` directory run `dch -v <version>` to add new version to `my-app/debian/changelog`
    and edit the changelog release notes.
 4. For DKMS packages make sure PACKAGE_VERSION in `debian/dkms` matches the one from changelog.
+5. If there are `debian/patches`, they may need to be ported to a new version as well. How-to: TODO.

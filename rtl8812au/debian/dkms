@@ -1,1 +1,9 @@
-dkms.conf
+PACKAGE_NAME="rtl8812au"
+PACKAGE_VERSION="5.2.20~git20251029.7bccd51-1"
+CLEAN="'make' clean"
+BUILT_MODULE_NAME[0]=88XXau_wfb
+PROCS_NUM=`nproc`
+[ $PROCS_NUM -gt 16 ] && PROCS_NUM=16
+DEST_MODULE_LOCATION[0]="/updates"
+MAKE="'make' -j$PROCS_NUM KVER=${kernelver} KSRC=/lib/modules/${kernelver}/build"
+AUTOINSTALL="yes"
