@@ -1,5 +1,5 @@
-PACKAGE_NAME="realtek-rtl8733bu"
-PACKAGE_VERSION="5.15.12"
+PACKAGE_NAME="rtl8733bu"
+PACKAGE_VERSION="5.15.12~git20250607.2ec19e1-1"
 CLEAN="'make' clean"
 BUILT_MODULE_NAME[0]=8733bu
 PROCS_NUM=`nproc`
@@ -7,4 +7,3 @@ PROCS_NUM=`nproc`
 DEST_MODULE_LOCATION[0]="/updates"
 MAKE="'make' -j$PROCS_NUM KVER=${kernelver} KSRC=/lib/modules/${kernelver}/build"
 AUTOINSTALL="yes"
-REMAKE_INITRD=no

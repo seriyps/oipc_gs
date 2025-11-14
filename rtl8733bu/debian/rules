@@ -22,14 +22,16 @@ KVER := $(shell ls /lib/modules | tail -n 1)
 %:
 	dh $@ --with dkms
 
+override_dh_auto_build:
+# We don't need to build DKMS module
+	true
+
 override_dh_install:
 	DEB_VERSION=$(DEB_VERSION) dh_install
 
 override_dh_builddeb:
 	dh_builddeb -- -Zxz
 
-override_dh_auto_build:
-	dh_auto_build -- KVER=$(KVER)
-
 override_dh_auto_install:
-	dh_auto_install -- KVER=$(KVER)
+# We have explicit install in `install` file
+	true

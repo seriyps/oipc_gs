@@ -1,12 +1,9 @@
 #!/usr/bin/dh-exec
 
-8733bu.* usr/src/rtl8733bu-${DEB_VERSION}/
 Kconfig usr/src/rtl8733bu-${DEB_VERSION}/
 LICENSE usr/src/rtl8733bu-${DEB_VERSION}/
 Makefile usr/src/rtl8733bu-${DEB_VERSION}/
 core usr/src/rtl8733bu-${DEB_VERSION}/
-# dkms.conf usr/src/rtl8733bu-${DEB_VERSION}/
-# documents usr/src/rtl8733bu-${DEB_VERSION}/
 hal usr/src/rtl8733bu-${DEB_VERSION}/
 halmac-rs.mk usr/src/rtl8733bu-${DEB_VERSION}/
 include usr/src/rtl8733bu-${DEB_VERSION}/
@@ -14,4 +11,3 @@ os_dep usr/src/rtl8733bu-${DEB_VERSION}/
 platform usr/src/rtl8733bu-${DEB_VERSION}/
 realtek_8733bu.conf usr/src/rtl8733bu-${DEB_VERSION}/
 rtl8733b.mk usr/src/rtl8733bu-${DEB_VERSION}/
-# tools usr/src/rtl8733bu-${DEB_VERSION}/

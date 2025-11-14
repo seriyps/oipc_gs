@@ -14,7 +14,7 @@ Homepage: https://github.com/svpcom/rtl8812au
 #Vcs-Git: https://salsa.debian.org/debian/rtl8812au.git
 
 Package: rtl8812au-dkms
-Architecture: any
+Architecture: arm64
 Depends:
  ${misc:Depends},
 Description: Realtek RTL8812AU DKMS driver with WFB patches
