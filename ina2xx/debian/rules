@@ -1,0 +1,40 @@
+#!/usr/bin/make -f
+
+# See debhelper(7) (uncomment to enable).
+# Output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+
+# See FEATURE AREAS in dpkg-buildflags(1).
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# See ENVIRONMENT in dpkg-buildflags(1).
+# Package maintainers to append CFLAGS.
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# Package maintainers to append LDFLAGS.
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+include /usr/share/dpkg/pkg-info.mk
+#include /usr/share/dpkg/architecture.mk
+
+KERNEL_SOURCE=$(CURDIR)/linux-source-$(DEB_VERSION)
+KVER=$(shell cat debian/kver)  # set by build_deb.sh
+
+%:
+	dh $@
+
+override_dh_auto_build:
+# Build the module
+	yes '' | make -C $(KERNEL_SOURCE) oldconfig
+	make -C $(KERNEL_SOURCE) -j`nproc` prepare
+	make -C $(KERNEL_SOURCE) modules_prepare
+	make -C $(KERNEL_SOURCE) -j`nproc` M=drivers/hwmon
+
+
+override_dh_install:
+	DEB_VERSION=$(DEB_VERSION) KERNEL_VERSION=$(KVER) dh_install
+
+# is it ok?
+override_dh_gencontrol:
+	echo "KERNEL=linux-image-$(KVER)" >> debian/linux-ina2xx-module.substvars
+	dh_gencontrol

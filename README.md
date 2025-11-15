@@ -197,17 +197,18 @@ at `https://github.com/my-user/my-app`.
 
 1. Create a new directory `my-app`.
 2. Clone the app repo to `my-app/my-app`
-3. Generate the source archive `cd my-app/my-app; git archive v1.2.3 | xz >../my-app_1.2.3.orig.tar.xz`
-   It can be created by `dh_make --createorig`, but then the .orig would include `.git` directory,
-   so we use `git archive` instead.
-3. Initialize the `debian/` folder `cd my-app/; dh_make --packagename my-app_1.2.3 --single -f my-app_1.2.3.orig.tar.xz`
+3. Generate the source archive `cd my-app/my-app; git archive v1.2.3 | xz >../my-app_1.2.3.tar.xz`.
+   If package has submodules, use `git ls-files --recurse-submodules | tar -caf ../my-app_1.2.3.tar.xz -T-`
+4. Unpack the archive to `my-app-1.2.3`
+3. Initialize the `debian/` folder `cd my-app-1.2.3/; debmake`
+4. Move the generated `debian/` directory to the `my-app`
 4. Edit the contents of this `debian/` folder; (!!) make sure changelog contains the right version, eg
    `git log --date=format:%Y%m%d --pretty=${MY_APP_DEB_VSN}~git%cd.%h | head -n 1`.
    Use `dch -v $VSN` if needed.
 5. Create the `my-app/Makefile` - makefile that should have `deb` and `clean` targets. `deb` will
    be executed from within the Makefile's directory inside a container and should actually build
    the DEB package.
-5. Add `do_my-app` function to `build.sh` that will clone the code, copy the `debian` dir into it
+5. Add `do_my_app` function to `build.sh` that will clone the code, copy the `debian` dir into it
    and call `make deb` from inside the container. Add `MY_APP_GIT_VSN` and `MY_APP_DEB_VSN` variables.
 
 How to upgrade package

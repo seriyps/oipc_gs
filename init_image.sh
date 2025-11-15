@@ -43,6 +43,7 @@ if [ $SKIP_SETUP -lt 1 ]; then
         bullseye)
             tee /etc/apt/sources.list.d/70-radxa.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/bullseye/ bullseye main"
             tee /etc/apt/sources.list.d/80-rockchip.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/bullseye rockchip-bullseye main"
+            sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
             ;;
     esac
 

@@ -1,0 +1,3 @@
+#!/usr/bin/dh-exec
+
+linux-source-${DEB_VERSION}/drivers/hwmon/ina2xx.ko lib/modules/${KERNEL_VERSION}/kernel/drivers/hwmon/

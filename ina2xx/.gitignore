@@ -1,0 +1,5 @@
+linux-*/
+ina2xx_*/
+linux-ina2xx-module_*.deb
+ina2xx_*.buildinfo
+ina2xx_*.changes

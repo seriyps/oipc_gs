@@ -21,6 +21,14 @@ MSPOSD_DEB_VER="1.0.0"
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
 
+# From https://github.com/radxa-build/radxa-zero3/releases/download/rsdk-b1/radxa-zero3_bookworm_kde_b1.output_512.img.xz
+BOOKWORM_KERNEL="6.1.84-12"
+BOOKWORM_KERNEL_MOD="rk2410-nocsf"
+# From https://github.com/radxa-build/radxa-zero3/releases/download/b6/radxa-zero3_debian_bullseye_xfce_b6.img.xz
+BULLSEYE_KERNEL="5.10.160-39"
+BULLSEYE_KERNEL_MOD="rk356x"
+KERNEL_VERSION=
+
 GPG_KEY_ID="7E2CA22D6D61824C"
 
 POS_ARGS=()
@@ -39,8 +47,12 @@ done
 
 if [ "$DEBIAN_CODENAME" == "bookworm" ]; then
     DEBIAN_SYSTEM="debian-12-generic-arm64.tar"
+    KERNEL_VERSION=$BOOKWORM_KERNEL
+    KERNEL_MOD=$BOOKWORM_KERNEL_MOD
 elif [ "$DEBIAN_CODENAME" == "bullseye" ]; then
     DEBIAN_SYSTEM="debian-11-generic-arm64.tar"
+    KERNEL_VERSION=$BULLSEYE_KERNEL
+    KERNEL_MOD=$BULLSEYE_KERNEL_MOD
 fi
 DEBIAN_HOST=https://cloud.debian.org/images/cloud/$DEBIAN_CODENAME
 
@@ -52,7 +64,7 @@ APT_CACHE=$ROOT/.${DEBIAN_CODENAME}_apt_cache/
 # Common
 #
 
-APPS=("pixelpilot" "rtl8812au" "rtl8812eu" "rtl8733bu" "adaptive_link" "msposd")
+APPS=("pixelpilot" "rtl8812au" "rtl8812eu" "rtl8733bu" "adaptive_link" "msposd" "ina2xx")
 APPS_DIRS=()
 
 for app in "${APPS[@]}"; do
@@ -227,6 +239,46 @@ do_rtl8733bu() {
     init_raw_disk
     build_rtl_dkms_deb rtl8733bu https://github.com/libc0607/rtl8733bu-20240806.git \
         $RTL8733BU_GIT_VER $RTL8733BU_DEB_VER
+    umount_raw_disk
+}
+
+#
+# Build in-tree kernel modules
+#
+
+build_ina2xx_deb() {
+    cd ${ROOT}/ina2xx/
+    # Unfortunately radxa kernel repos for bookworm and bullseye are structured differently:
+    # * bookworm: kernel source is in 'src/' subdirectory as a submodule
+    # * bullseye: kernel source is described in https://github.com/radxa-repo/bsp/blob/main/linux/rk356x/fork.conf
+    #  and needs to be cloned from https://github.com/radxa/kernel.git from branch linux-5.10-gen-rkr4.1
+    # TODO: Maybe this module can be built against mainline kernel?
+    if [ ! -d "$ROOT/ina2xx/ina2xx_${KERNEL_VERSION}/linux-source-$KERNEL_VERSION" ]; then
+        mkdir -p $ROOT/ina2xx/ina2xx_${KERNEL_VERSION}/linux-source-$KERNEL_VERSION
+        if [ "$DEBIAN_CODENAME" == "bookworm" ]; then
+            git clone --recurse-submodules --shallow-submodules -b $KERNEL_VERSION https://github.com/radxa-pkg/linux-$KERNEL_MOD.git linux-$DEBIAN_CODENAME
+            cd linux-$DEBIAN_CODENAME/src/
+        elif [ "$DEBIAN_CODENAME" == "bullseye" ]; then
+            git clone --depth 1 -b linux-5.10-gen-rkr4.1 https://github.com/radxa/kernel.git linux-$DEBIAN_CODENAME
+            cd linux-$DEBIAN_CODENAME/
+        fi
+        git archive HEAD | tar -x -C $ROOT/ina2xx/ina2xx_${KERNEL_VERSION}/linux-source-$KERNEL_VERSION
+    fi
+    cd $ROOT/ina2xx/
+    cp -r debian/ ina2xx_${KERNEL_VERSION}/debian
+    cp debian.$DEBIAN_CODENAME/* ina2xx_${KERNEL_VERSION}/debian/
+    sudo mkdir -p $MOUNT/usr/src/ina2xx
+    sudo mount --bind $(pwd) $MOUNT/usr/src/ina2xx
+
+    sudo chroot $MOUNT /usr/bin/make -C /usr/src/ina2xx -f /usr/src/ina2xx/Makefile \
+         DEB_VER=$KERNEL_VERSION KERNEL_RELEASE=$KERNEL_VERSION-$KERNEL_MOD DEBIAN_CODENAME=$DEBIAN_CODENAME
+
+    sudo umount $MOUNT/usr/src/ina2xx
+}
+
+do_ina2xx() {
+    init_raw_disk
+    build_ina2xx_deb
     umount_raw_disk
 }
 
