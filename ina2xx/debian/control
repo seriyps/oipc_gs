@@ -29,3 +29,5 @@ Depends:
 Description: Device tree overlay for ina2xx radxa zero 3w
  Device tree overlay for ina2xx kernel driver.
  It assumes 0.1 Ohm shunt (R100) and i2c address 0x44.
+ Keep in mind that this package enables I2C on
+ i2c3-m0 (pins 3 and 5).

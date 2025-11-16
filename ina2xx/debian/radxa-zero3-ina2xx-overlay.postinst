@@ -12,6 +12,8 @@ case "$1" in
             ) | sort -u)
         # it can be probably replaced by just `u-boot-update`
         rsetup enable_overlays $enabled_files
+        # Signal that a reboot is required
+        touch /var/run/reboot-required
         ;;
 esac
 

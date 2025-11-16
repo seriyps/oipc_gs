@@ -67,10 +67,10 @@ Are we there yet?
 * [x] adaptive-link deb package
 * [ ] extras
   * [ ] PWM-fan (either daemon or kernel thermal zones / hwmon)
-  * [ ] voltage/current/power sensor INA226
+  * [x] voltage/current/power sensor INA226 (module and device tree)
   * [ ] RTC (autonomous clocks)
   * [ ] WiFi card autodetect
-  * [ ] Various .dts / .dtbo files (would probably vary depending on the hardware)
+  * [ ] Various extra .dts / .dtbo files (would probably vary depending on the hardware)
 * [ ] Debian repository (IN PROGRESS)
 * [ ] misc software (WiFi access point; SAMBA; USB MTP; USB Ethernet card)
 * [ ] OS image building

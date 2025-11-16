@@ -16,17 +16,17 @@
         </nav>
         <main>
             <section>
-                <h2>Import GPG key</h2>
+                <h2>1. Import GPG key</h2>
                 <pre><code>curl -s https://seriyps.github.io/oipc_gs/public.gpg | sudo gpg --dearmor -o /usr/share/keyrings/oipc_gs.gpg</code></pre>
             </section>
             <section>
-                <h2>Add repository to bookworm</h2>
+                <h2>2.a Add repository to bookworm</h2>
                 <pre><code>echo "deb [signed-by=/usr/share/keyrings/oipc_gs.gpg] https://seriyps.github.io/oipc_gs/oipc-bookworm bookworm main" | sudo tee /etc/apt/sources.list.d/oipc_gs.list</code></pre>
-                <h2>Add repository to bullseye</h2>
+                <h2>2.b Add repository to bullseye</h2>
                 <pre><code>echo "deb [signed-by=/usr/share/keyrings/oipc_gs.gpg] https://seriyps.github.io/oipc_gs/oipc-bullseye bullseye main" | sudo tee /etc/apt/sources.list.d/oipc_gs.list</code></pre>
             </section>
             <section>
-                <h2>Add WFB-NG repository</h2>
+                <h2>3. Add WFB-NG repository</h2>
                 <p>See <a href="https://apt.wfb-ng.org/">https://apt.wfb-ng.org/</a></p>
                 <pre><code>
 curl -s https://apt.wfb-ng.org/public.asc | sudo gpg --dearmor --yes -o /usr/share/keyrings/wfb-ng.gpg
@@ -34,7 +34,8 @@ echo "deb [signed-by=/usr/share/keyrings/wfb-ng.gpg] https://apt.wfb-ng.org/ $(l
                 </code></pre>
             </section>
             <section>
-                <h2>Install Oipc ground station</h2>
+                <h2>4. Install Oipc ground station</h2>
+                <p>XXX: openipc-gs-radxa3-basic is not implemented yet! Only individual packages are available now.</p>
                 <pre><code>
     sudo apt update
     sudo apt install openipc-gs-radxa3-basic
@@ -50,6 +51,7 @@ echo "deb [signed-by=/usr/share/keyrings/wfb-ng.gpg] https://apt.wfb-ng.org/ $(l
                     <li>rtl8812au-dkms - patched RTL8812AU DKMS WiFi driver</li>
                     <li>rtl8812eu-dkms - patched RTL8812EU DKMS WiFi driver</li>
                     <li>linux-ina2xx-module - INA2XX kernel module (built for specific kernel version)</li>
+                    <li>radxa-zero3-ina2xx-overlay - Device tree overlay for INA2XX support on Radxa Zero3</li>
                 </ul>
             </section>
         </main>
