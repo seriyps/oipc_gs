@@ -24,6 +24,8 @@ KVER=$(shell cat debian/kver)  # set by build_deb.sh
 	dh $@
 
 override_dh_auto_build:
+# Build device tree
+	dtc -I dts -O dtb -o ina226-overlay.dtbo radxa-zero-3w-ina226-overlay.dts
 # Build the module
 	yes '' | make -C $(KERNEL_SOURCE) oldconfig
 	make -C $(KERNEL_SOURCE) -j`nproc` prepare

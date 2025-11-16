@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    remove)
+        # dtbo_files=$(cd /boot/dtbo/ && ls *.dtbo | grep -v "ina226-overlay.dtbo")
+        # rsetup enable_overlays $dtbo_files
+        u-boot-update
+        ;;
+esac
+
+exit 0

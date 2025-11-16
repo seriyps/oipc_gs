@@ -8,7 +8,8 @@ deb:
 
 .PHONY: clean
 clean:
-	sudo rm -rf linux-ina2xx-module_*.deb
-	sudo rm -rf ina2xx_*.buildinfo
-	sudo rm -rf ina2xx_*.changes
+	sudo rm -f linux-ina2xx-module_*.deb
+	sudo rm -f radxa-zero3-ina2xx-overlay_*.deb
+	sudo rm -f ina2xx_*.buildinfo
+	sudo rm -f ina2xx_*.changes
 	sudo rm -rf ina2xx_*/

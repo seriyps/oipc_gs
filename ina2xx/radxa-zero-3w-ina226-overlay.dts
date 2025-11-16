@@ -1,5 +1,11 @@
 /dts-v1/;
 / {
+    metadata {
+        title = "INA226 power sensor";
+        compatible = "radxa,zero3";
+        category = "misc";
+        description = "INA226 power sensor. Assumes I2C bus i2c3 (pins 3 and 5), address 0x44 and 0.1 ohm shunt resistor.";
+    };
     fragment@0 {
         target-path = "/i2c@fe5c0000"; // Target the I2C bus of i2c3
         __overlay__ {

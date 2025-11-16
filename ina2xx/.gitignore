@@ -1,5 +1,6 @@
 linux-*/
 ina2xx_*/
 linux-ina2xx-module_*.deb
+radxa-zero3-ina2xx-overlay_*.deb
 ina2xx_*.buildinfo
 ina2xx_*.changes

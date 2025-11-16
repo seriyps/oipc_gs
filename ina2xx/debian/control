@@ -20,3 +20,12 @@ Depends:
  ${KERNEL},
 Description: Ina2xx linux kernel module
  Kernel module hwmon ina2xx.
+
+Package: radxa-zero3-ina2xx-overlay
+Architecture: any
+Depends:
+ linux-ina2xx-module,
+ rsetup,
+Description: Device tree overlay for ina2xx radxa zero 3w
+ Device tree overlay for ina2xx kernel driver.
+ It assumes 0.1 Ohm shunt (R100) and i2c address 0x44.

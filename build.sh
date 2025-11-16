@@ -267,6 +267,7 @@ build_ina2xx_deb() {
     cd $ROOT/ina2xx/
     cp -r debian/ ina2xx_${KERNEL_VERSION}/debian
     cp debian.$DEBIAN_CODENAME/* ina2xx_${KERNEL_VERSION}/debian/
+    cp radxa-zero-3w-ina226-overlay.dts ina2xx_${KERNEL_VERSION}/
     sudo mkdir -p $MOUNT/usr/src/ina2xx
     sudo mount --bind $(pwd) $MOUNT/usr/src/ina2xx
 

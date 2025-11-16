@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+        enabled_files=$(
+            (
+            echo "ina226-overlay.dtbo"
+            echo "rk3568-i2c3-m0.dtbo"
+            cd /boot/dtbo/ && ls *.dtbo
+            ) | sort -u)
+        # it can be probably replaced by just `u-boot-update`
+        rsetup enable_overlays $enabled_files
+        ;;
+esac
+
+exit 0
