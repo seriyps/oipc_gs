@@ -66,12 +66,13 @@ Are we there yet?
 * [x] msposd deb package
 * [x] adaptive-link deb package
 * [ ] extras
-  * [ ] PWM-fan (either daemon or kernel thermal zones / hwmon)
+  * [x] PWM-fan (either daemon or kernel thermal zones / hwmon)
   * [x] voltage/current/power sensor INA226 (module and device tree)
   * [ ] RTC (autonomous clocks)
   * [ ] WiFi card autodetect
   * [ ] Various extra .dts / .dtbo files (would probably vary depending on the hardware)
-* [ ] Debian repository (IN PROGRESS)
+* [ ] Umbrella-Packages `openipc-gs-<base|full|relay|runcam|emacs|...>`
+* [x] Debian repository (IN PROGRESS)
 * [ ] misc software (WiFi access point; SAMBA; USB MTP; USB Ethernet card)
 * [ ] OS image building
 * [ ] custom base Debian image (stripped for smaller size and start-up time)
@@ -197,8 +198,8 @@ at `https://github.com/my-user/my-app`.
 
 1. Create a new directory `my-app`.
 2. Clone the app repo to `my-app/my-app`
-3. Generate the source archive `cd my-app/my-app; git archive v1.2.3 | xz >../my-app_1.2.3.tar.xz`.
-   If package has submodules, use `git ls-files --recurse-submodules | tar -caf ../my-app_1.2.3.tar.xz -T-`
+3. Generate the source archive `cd my-app/my-app; git archive v1.2.3 | xz >../my-app-1.2.3.tar.xz`.
+   If package has submodules, use `git ls-files --recurse-submodules | tar -caf ../my-app-1.2.3.tar.xz -T-`
 4. Unpack the archive to `my-app-1.2.3`
 3. Initialize the `debian/` folder `cd my-app-1.2.3/; debmake`
 4. Move the generated `debian/` directory to the `my-app`

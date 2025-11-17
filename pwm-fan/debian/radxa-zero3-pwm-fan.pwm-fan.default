@@ -1,0 +1,4 @@
+# Defaults for pwm-fan initscript
+# See fan-manager.sh --help
+
+MANAGER_ARGS="-c pwmchip0 -z 0 -i 30"

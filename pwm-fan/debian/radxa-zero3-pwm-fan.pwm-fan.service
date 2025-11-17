@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-EnvironmentFile=-/etc/default/fan-manager
-ExecStart=/usr/local/bin/fan-manager.sh $MANAGER_ARGS
+EnvironmentFile=-/etc/default/pwm-fan
+ExecStart=/usr/bin/fan-manager.sh $MANAGER_ARGS
 Restart=on-failure
 
 [Install]

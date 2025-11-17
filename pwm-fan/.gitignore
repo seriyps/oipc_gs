@@ -1,0 +1,7 @@
+pwm-fan_*/
+pwm-fan_*.debian.tar.xz
+pwm-fan_*.dsc
+pwm-fan_*.buildinfo
+pwm-fan_*.changes
+pwm-fan_*.orig.tar.xz
+radxa-zero3-pwm-fan_*.deb

@@ -18,6 +18,8 @@ ALINK_DEB_VER="0.63.0"
 MSPOSD_GIT_VER="694221a59e4b17fd4324d24337a7bf3293127dcf"
 MSPOSD_DEB_VER="1.0.0"
 
+PWM_FAN_DEB_VER="0.0.1"
+
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
 
@@ -64,7 +66,7 @@ APT_CACHE=$ROOT/.${DEBIAN_CODENAME}_apt_cache/
 # Common
 #
 
-APPS=("pixelpilot" "rtl8812au" "rtl8812eu" "rtl8733bu" "adaptive_link" "msposd" "ina2xx")
+APPS=("pixelpilot" "rtl8812au" "rtl8812eu" "rtl8733bu" "adaptive_link" "msposd" "ina2xx", "pwm_fan")
 APPS_DIRS=()
 
 for app in "${APPS[@]}"; do
@@ -349,6 +351,32 @@ build_msposd_deb() {
 do_msposd() {
     init_raw_disk
     build_msposd_deb
+    umount_raw_disk
+}
+
+#
+# PWM Fan Controller
+#
+
+build_pwm_fan_deb() {
+    cd pwm-fan/
+    ORIG_DIR=pwm-fan-${PWM_FAN_DEB_VER}
+    SRCDIR=pwm-fan_${PWM_FAN_DEB_VER}
+    tar -caf ${SRCDIR}.orig.tar.xz $ORIG_DIR
+    cp -r $ORIG_DIR $SRCDIR
+    cp -r debian/ $SRCDIR/debian
+    sudo mkdir -p $MOUNT/usr/src/pwm-fan
+    sudo mount --bind $(pwd) $MOUNT/usr/src/pwm-fan
+
+    sudo chroot $MOUNT /usr/bin/make -C /usr/src/pwm-fan -f /usr/src/pwm-fan/Makefile \
+         DEB_VER=$PWM_FAN_DEB_VER DEBIAN_CODENAME=$DEBIAN_CODENAME
+
+    sudo umount $MOUNT/usr/src/pwm-fan
+}
+
+do_pwm_fan() {
+    init_raw_disk
+    build_pwm_fan_deb
     umount_raw_disk
 }
 

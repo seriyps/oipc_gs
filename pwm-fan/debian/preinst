@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    install|upgrade)
+        # Enable the PWM14 overlay for RK3568 boards
+        enabled_files=$(
+            (
+            echo "rk3568-pwm14-m0.dtbo"
+            cd /boot/dtbo/ && ls *.dtbo
+            ) | sort -u)
+        # it can be probably replaced by just `u-boot-update`
+        rsetup enable_overlays $enabled_files
+        # Signal that a reboot is required
+        touch /var/run/reboot-required
+        ;;
+esac
+
+exit 0

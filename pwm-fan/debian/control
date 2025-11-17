@@ -1,0 +1,22 @@
+Source: pwm-fan
+Section: misc
+Priority: optional
+Maintainer: Sergey Prokhorov <seriy.pr@gmail.com>
+Build-Depends:
+ debhelper-compat (= 13),
+Standards-Version: 4.7.0
+Homepage: https://github.com/seriyps/oipc_gs/tree/master/pwm_fan
+Rules-Requires-Root: no
+#Vcs-Git: https://salsa.debian.org/debian/pwm-fan.git
+#Vcs-Browser: https://salsa.debian.org/debian/pwm-fan
+
+Package: radxa-zero3-pwm-fan
+Architecture: all
+Multi-Arch: foreign
+Depends:
+ rsetup,
+ ${misc:Depends},
+Description: PWM fan daemon that controls radxa fan speed
+ Daemon that reads the temperature from thermal zones and
+ adjusts PWM fan speed.
+ It enables PWM on pwm14-m0 (pin 7).

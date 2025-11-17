@@ -43,7 +43,7 @@ set_level(){
 monitor_temp() {
     while true; do
         temp_raw=$(cat /sys/class/thermal/thermal_zone${THERMAL_ZONE}/temp)
-	temp=$((temp_raw / 1000))
+        temp=$((temp_raw / 1000))
         echo "Current temperature: $temp °C"
         if [ "$temp" -ge "$level3" ]; then
             set_level 40000
@@ -66,9 +66,17 @@ start(){
 
     # check if pwm0 exists and create it if not
     if [ ! -d /sys/class/pwm/${CHIP}/pwm0 ]; then
-        echo "pwm0 not found"
+        echo "pwm0 not found, trying to enable it..."
         echo 0 > /sys/class/pwm/${CHIP}/export
         sleep 0.2
+    fi
+    if [ ! -d /sys/class/pwm/${CHIP}/pwm0 ]; then
+        echo "Failed to create pwm0 for ${CHIP}"
+        exit 1
+    fi
+    if [ ! -f /sys/class/thermal/thermal_zone${THERMAL_ZONE}/temp ]; then
+        echo "Thermal zone ${THERMAL_ZONE} not found"
+        exit 2
     fi
     # set pwm0 period
     echo 40000 > /sys/class/pwm/${CHIP}/pwm0/period

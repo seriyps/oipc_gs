@@ -1,0 +1,18 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: pwm_fan
+Upstream-Contact: Sergey Prokhorov
+Source: https://github.com/seriyps/oipc_gs/tree/master/pwm_fan
+#
+# Please double check copyright with the licensecheck(1) command.
+
+Files:     fan-manager.sh
+Copyright: Sergey Prokhorov
+License:   GPL-2+
+
+Files:     debian/*
+Copyright: Sergey Prokhorov
+License:   GPL-2+
+
+#----------------------------------------------------------------------------
+# Files marked as NO_LICENSE_TEXT_FOUND may be covered by the following
+# license/copyright files.

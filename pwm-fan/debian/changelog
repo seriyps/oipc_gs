@@ -1,0 +1,5 @@
+pwm-fan (0.0.1-1) UNRELEASED; urgency=low
+
+  * Initial release.
+
+ -- Sergey Prokhorov <seriy.pr@gmail.com>  Mon, 17 Nov 2025 00:43:46 +0100
