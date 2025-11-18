@@ -211,6 +211,7 @@ at `https://github.com/my-user/my-app`.
    the DEB package.
 5. Add `do_my_app` function to `build.sh` that will clone the code, copy the `debian` dir into it
    and call `make deb` from inside the container. Add `MY_APP_GIT_VSN` and `MY_APP_DEB_VSN` variables.
+   Add `my_app` to `APPS` array.
 
 How to upgrade package
 ----------------------

@@ -31,7 +31,15 @@ BULLSEYE_KERNEL="5.10.160-39"
 BULLSEYE_KERNEL_MOD="rk356x"
 KERNEL_VERSION=
 
+# Private key is stored in GitHub Secrets and imported in CI workflow
+# Public key is ./public.gpg
 GPG_KEY_ID="7E2CA22D6D61824C"
+
+APPS=("pixelpilot" "rtl8812au" "rtl8812eu" "rtl8733bu" "adaptive_link" "msposd" "ina2xx" "pwm_fan")
+
+############################
+# Script logic starts here #
+############################
 
 POS_ARGS=()
 while [[ $# -gt 0 ]]; do
@@ -39,6 +47,10 @@ while [[ $# -gt 0 ]]; do
         --debian-codename)
             DEBIAN_CODENAME=$2
             shift 2
+            ;;
+        --*)
+            echo "Unknown option: $1"
+            exit 1
             ;;
         *)
             POS_ARGS+=("$1")
@@ -66,9 +78,7 @@ APT_CACHE=$ROOT/.${DEBIAN_CODENAME}_apt_cache/
 # Common
 #
 
-APPS=("pixelpilot" "rtl8812au" "rtl8812eu" "rtl8733bu" "adaptive_link" "msposd" "ina2xx", "pwm_fan")
 APPS_DIRS=()
-
 for app in "${APPS[@]}"; do
     # Replace '_' with '-' and add to the new array
     APPS_DIRS+=("${app//_/-}")
