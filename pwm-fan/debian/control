@@ -15,6 +15,7 @@ Architecture: all
 Multi-Arch: foreign
 Depends:
  rsetup,
+ radxa-overlays-dkms,
  ${misc:Depends},
 Description: PWM fan daemon that controls radxa fan speed
  Daemon that reads the temperature from thermal zones and

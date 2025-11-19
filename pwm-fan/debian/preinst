@@ -2,9 +2,20 @@
 
 set -e
 
+# Normally DTBO files are in /boot/dtbo, however when we are working with a disk image through chroot,
+# they might not be there yet. This function ensures that the required DTBO file is present.
+ensure_dtbo() {
+    DTBO_FILE="$1"
+    if [ ! -f "/boot/dtbo/$DTBO_FILE" -a ! -f "/boot/dtbo/$DTBO_FILE.disabled" ]; then
+        echo "Installing $DTBO_FILE to /boot/dtbo/"
+        cp /var/lib/dkms/radxa-overlays/*/*/aarch64/module/arch/arm64/boot/dts/rockchip/overlays/$DTBO_FILE "/boot/dtbo/$DTBO_FILE"
+    fi
+}
+
 case "$1" in
     install|upgrade)
         # Enable the PWM14 overlay for RK3568 boards
+        ensure_dtbo "rk3568-pwm14-m0.dtbo"
         enabled_files=$(
             (
             echo "rk3568-pwm14-m0.dtbo"

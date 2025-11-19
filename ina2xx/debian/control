@@ -26,6 +26,7 @@ Architecture: any
 Depends:
  linux-ina2xx-module,
  rsetup,
+ radxa-overlays-dkms,
 Description: Device tree overlay for ina2xx radxa zero 3w
  Device tree overlay for ina2xx kernel driver.
  It assumes 0.1 Ohm shunt (R100) and i2c address 0x44.
