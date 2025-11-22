@@ -28,4 +28,7 @@ case "$1" in
         ;;
 esac
 
+# Below code is added by debhelper / dh_systemd
+#DEBHELPER#
+
 exit 0
