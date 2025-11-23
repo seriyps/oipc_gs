@@ -1,7 +1,10 @@
 debian-*-arm64.tar.xz
-*-disk.raw
+radxa-image-*.img.xz
+radxa-image-*.img
+*-disk.img
 .bookworm_apt_cache/
 .bullseye_apt_cache/
 ina2xx/*.dtbo
 pixelpilot/PixelPilot_rk/
 mountpoint/
+radxa_mountpoint/

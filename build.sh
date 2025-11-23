@@ -23,10 +23,13 @@ PWM_FAN_DEB_VER="0.0.1"
 DEBIAN_CODENAME=bookworm
 DEBIAN_RELEASE=latest
 
-# From https://github.com/radxa-build/radxa-zero3/releases/download/rsdk-b1/radxa-zero3_bookworm_kde_b1.output_512.img.xz
+BOOKWORM_RADXA_IMAGE_URL="https://github.com/radxa-build/radxa-zero3/releases/download/rsdk-b1/radxa-zero3_bookworm_kde_b1.output_512.img.xz"
+# From BOOKWORM_RADXA_IMAGE_URL
 BOOKWORM_KERNEL="6.1.84-12"
 BOOKWORM_KERNEL_MOD="rk2410-nocsf"
-# From https://github.com/radxa-build/radxa-zero3/releases/download/b6/radxa-zero3_debian_bullseye_xfce_b6.img.xz
+
+BULLEYE_RADXA_IMAGE_URL="https://github.com/radxa-build/radxa-zero3/releases/download/b6/radxa-zero3_debian_bullseye_xfce_b6.img.xz"
+# From BULLEYE_RADXA_IMAGE_URL
 BULLSEYE_KERNEL="5.10.160-39"
 BULLSEYE_KERNEL_MOD="rk356x"
 KERNEL_VERSION=
@@ -63,10 +66,12 @@ if [ "$DEBIAN_CODENAME" == "bookworm" ]; then
     DEBIAN_SYSTEM="debian-12-generic-arm64.tar"
     KERNEL_VERSION=$BOOKWORM_KERNEL
     KERNEL_MOD=$BOOKWORM_KERNEL_MOD
+    RADXA_IMAGE_URL=$BOOKWORM_RADXA_IMAGE_URL
 elif [ "$DEBIAN_CODENAME" == "bullseye" ]; then
     DEBIAN_SYSTEM="debian-11-generic-arm64.tar"
     KERNEL_VERSION=$BULLSEYE_KERNEL
     KERNEL_MOD=$BULLSEYE_KERNEL_MOD
+    RADXA_IMAGE_URL=$BULLEYE_RADXA_IMAGE_URL
 fi
 DEBIAN_HOST=https://cloud.debian.org/images/cloud/$DEBIAN_CODENAME
 
@@ -103,7 +108,7 @@ get_debian_image() {
 get_raw_disk() {
     get_debian_image
     tar -xf $ROOT/${DEBIAN_SYSTEM}.xz
-    mv $ROOT/disk.raw $ROOT/$DEBIAN_CODENAME-disk.raw
+    mv $ROOT/disk.raw $ROOT/$DEBIAN_CODENAME-disk.img
 }
 
 init_raw_disk() {
@@ -117,11 +122,11 @@ init_raw_disk() {
 }
 
 mount_raw_disk() {
-    if [ ! -f "$DEBIAN_CODENAME-disk.raw" ]; then
+    if [ ! -f "$DEBIAN_CODENAME-disk.img" ]; then
         get_raw_disk
     fi
     mkdir $MOUNT || true
-    sudo mount `sudo losetup -P --show -f $DEBIAN_CODENAME-disk.raw`p1 $MOUNT
+    sudo mount `sudo losetup -P --show -f $DEBIAN_CODENAME-disk.img`p1 $MOUNT
 	mkdir $APT_CACHE || true
 	sudo mount -o bind $APT_CACHE $MOUNT/var/cache/apt
 
@@ -140,7 +145,7 @@ umount_raw_disk() {
     sudo umount $MOUNT/dev
     sudo umount $MOUNT/run
     sudo umount $MOUNT
-    sudo losetup --detach `losetup | grep $DEBIAN_CODENAME-disk.raw | cut -f 1 -d " "`
+    sudo losetup --detach `losetup | grep $DEBIAN_CODENAME-disk.img | cut -f 1 -d " "`
 }
 
 do_mount() {
@@ -414,6 +419,79 @@ do_apt_repository() {
     DISTRO_PATH=~/.aptly/public/$DEB_REPO_ORIGIN/dists/$DEBIAN_CODENAME
     gpg --yes --batch --armor -u $GPG_KEY_ID --clear-sign  -o "$DISTRO_PATH/InRelease"   "$DISTRO_PATH/Release"
     gpg --yes --batch --armor -u $GPG_KEY_ID --detach-sign -o "$DISTRO_PATH/Release.gpg" "$DISTRO_PATH/Release"
+}
+
+#
+# Build OS image with all packages installed
+#
+
+attach_radxa_image() {
+    # Radxa's image partitioning schema is:
+    # - p1: /config (FAT32)
+    # - p2: for bookworm - EFI System Partition (FAT32); for bullseye - /boot (FAT32)
+    # - p3: / (ext4)
+    sudo losetup -P --show -f $ROOT/radxa-image-${DEBIAN_CODENAME}.img
+}
+
+detach_radxa_image() {
+    LOOP=`losetup | grep radxa-image-${DEBIAN_CODENAME}.img | cut -f 1 -d " "`
+    sudo losetup --detach $LOOP
+}
+
+mount_radxa_image() {
+    if [ ! -f "radxa-image-${DEBIAN_CODENAME}.img.xz" ]; then
+        curl -L $RADXA_IMAGE_URL -o $ROOT/radxa-image-${DEBIAN_CODENAME}.img.xz
+    fi
+    if [ ! -f "radxa-image-${DEBIAN_CODENAME}.img" ]; then
+        xz -dk $ROOT/radxa-image-${DEBIAN_CODENAME}.img.xz
+    fi
+    MOUNT=$ROOT/radxa_mountpoint
+    mkdir $MOUNT || true
+    LOOP=`attach_radxa_image`
+    sudo mount ${LOOP}p3 $MOUNT
+    sudo mount ${LOOP}p2 $MOUNT/boot/efi
+
+    sudo mount -t proc /proc $MOUNT/proc
+    sudo mount -t sysfs /sys $MOUNT/sys
+    sudo mount -o bind /dev $MOUNT/dev
+    sudo mount -o bind /run $MOUNT/run
+    sudo mount -t devpts devpts $MOUNT/dev/pts
+}
+
+umount_radxa_image() {
+    MOUNT=$ROOT/radxa_mountpoint
+    sudo umount $MOUNT/dev/pts
+    sudo umount $MOUNT/proc
+    sudo umount $MOUNT/sys
+    sudo umount $MOUNT/dev
+    sudo umount $MOUNT/run
+    sudo umount $MOUNT/boot/efi
+    sudo umount $MOUNT
+    detach_radxa_image
+}
+
+do_mount_radxa_image() {
+    mount_radxa_image
+}
+
+do_umount_radxa_image() {
+    umount_radxa_image
+}
+
+do_with_radxa_image() {
+    mount_radxa_image
+    MOUNT=$ROOT/radxa_mountpoint
+    sudo chroot $MOUNT /bin/bash
+    umount_radxa_image
+}
+
+do_radxa_image() {
+    mount_radxa_image
+    MOUNT=$ROOT/radxa_mountpoint
+    sudo cp init_radxa_image.sh $MOUNT/usr/local/bin/
+    sudo chroot $MOUNT /usr/local/bin/init_radxa_image.sh
+    umount_radxa_image
+    python3 resize_copy.py  --resize-rootfs 3600M radxa-image-${DEBIAN_CODENAME}.img radxa-image-${DEBIAN_CODENAME}-min.img
 }
 
 set -x

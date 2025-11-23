@@ -97,3 +97,29 @@ jobs:
         if: "github.event_name != 'pull_request'"
         name: "Deploy to GitHub Pages"
         uses: "actions/deploy-pages@v4"
+  build_image:
+    name: Build OS image
+    runs-on: ubuntu-24.04-arm
+    needs:
+      - deploy
+    strategy:
+      matrix:
+        debian_codename:
+          # - bullseye
+          - bookworm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build img
+        run: |
+          ./build.sh radxa_image --debian-codename ${{ matrix.debian_codename }}
+          mv radxa-image-${{ matrix.debian_codename }}-min.img radxa-image-${{ matrix.debian_codename }}-min-0.0.1.img
+          xz radxa-image-${{ matrix.debian_codename }}-min-0.0.1.img
+
+      - name: Upload image as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.debian_codename }}-img
+          path: |
+            radxa-image-${{ matrix.debian_codename }}-min-0.0.1.img.xz
